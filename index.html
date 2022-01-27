@@ -67,105 +67,105 @@
         <script>
             window._sp_queue = [];
             window._sp_ = {
-            config: {
-                accountId: 1732,
-                propertyHref: "https://www.visitdenmark.com",
-                baseEndpoint: 'https://cdn.privacy-mgmt.com',
-                gdpr: { },
-                events: {
+                config: {
+                    accountId: 1732,
+                    propertyHref: "https://www.visitdenmark.com",
+                    baseEndpoint: 'https://cdn.privacy-mgmt.com',
+                    gdpr: { },
+                    events: {
 
-                    onMessageReady: function (message_type) {
-                        console.log('onMessageReady message_type >> ', message_type);
-                    },
+                        onMessageReady: function (message_type) {
+                            console.log('onMessageReady message_type >> ', message_type);
+                        },
                     
-                    onMessageChoiceSelect: function (message_type, choice_id, choice_type_id) {
-                        console.log('onMessonMessageChoiceSelectageReady message_type >> ', message_type);
-                        console.log('onMessageChoiceSelect choice_id >> ', choice_id);
-                        console.log('onMessageChoiceSelect choice_type_id >> ', choice_type_id);
-                    },
+                        onMessageChoiceSelect: function (message_type, choice_id, choice_type_id) {
+                            console.log('onMessonMessageChoiceSelectageReady message_type >> ', message_type);
+                            console.log('onMessageChoiceSelect choice_id >> ', choice_id);
+                            console.log('onMessageChoiceSelect choice_type_id >> ', choice_type_id);
+                        },
                     
-                    onPrivacyManagerAction: function (message_type, pmData) {
-                        console.log('onPrivacyManagerAction message_type >> ', message_type);
-                        console.log('onPrivacyManagerAction pmData >> ', pmData);
-                    },
+                        onPrivacyManagerAction: function (message_type, pmData) {
+                            console.log('onPrivacyManagerAction message_type >> ', message_type);
+                            console.log('onPrivacyManagerAction pmData >> ', pmData);
+                        },
                     
-                    onMessageChoiceError: function (message_type, err) {
-                        console.log('onMessageChoiceError message_type >> ', message_type);
-                        console.log('onMessageChoiceError err >> ', err);
-                    },
+                        onMessageChoiceError: function (message_type, err) {
+                            console.log('onMessageChoiceError message_type >> ', message_type);
+                            console.log('onMessageChoiceError err >> ', err);
+                        },
 
-                    onConsentReady: function (message_type, consentUUID, euconsent) {
-                        console.log('onConsentReady message_type >> ', message_type);
-                        console.log('onConsentReady consentUUID >> ', consentUUID);
-                        console.log('onConsentReady euconsent >>', euconsent);
-                    },
+                        onConsentReady: function (message_type, consentUUID, euconsent) {
+                            console.log('onConsentReady message_type >> ', message_type);
+                            console.log('onConsentReady consentUUID >> ', consentUUID);
+                            console.log('onConsentReady euconsent >>', euconsent);
+                        },
                     
-                    onPMCancel: function (message_type) {
-                        console.log('onPMCancel message_type >> ', message_type);
-                    },
+                        onPMCancel: function (message_type) {
+                            console.log('onPMCancel message_type >> ', message_type);
+                        },
                     
-                    onMessageReceiveData: function (data) {
-                        console.log('onMessageReceiveData >> ', data);
-                        console.log(JSON.stringify(data));
-                    },
+                        onMessageReceiveData: function (data) {
+                            console.log('onMessageReceiveData >> ', data);
+                            console.log(JSON.stringify(data));
+                        },
                     
-                    onSPPMObjectReady: function () {
-                        console.log('onSPPMObjectReady');
-                    },
+                        onSPPMObjectReady: function () {
+                            console.log('onSPPMObjectReady');
+                        },
 
-                    onError: function (message_type, errorCode, errorObject, userReset) {
-                    console.log('onError message_type >> ', message_type);
-                    console.log('onError errorCode >> ' + errorCode);
-                    console.log('onError errorObject >> ', errorObject);
-                    console.log('onError userReset >> ' + userReset);
+                        onError: function (message_type, errorCode, errorObject, userReset) {
+                            console.log('onError message_type >> ', message_type);
+                            console.log('onError errorCode >> ' + errorCode);
+                            console.log('onError errorObject >> ', errorObject);
+                            console.log('onError userReset >> ' + userReset);
+                        }
+
                     }
+                },
 
+                getCustomVendorConsents(vendorConsents, success) {
+                    console.log('>>> test <<< ' + success);
+                    console.log(vendorConsents);
                 }
-            },
-
-            getCustomVendorConsents(vendorConsents, success) {
-                console.log('>>> test <<< ' + success);
-                console.log(vendorConsents);
-            }
 
             }
 
             function callback_function(tcData, success) {
-            // your custom callback code can be included here
-            if(success) {
-
-                console.log('tcData response:', tcData);
-
-                __tcfapi('ping', 2, (pingReturn) => {
                 // your custom callback code can be included here
-                console.log("retrieving pingReturn:", pingReturn)
-                });
+                if(success) {
 
-                if (tcData.eventStatus === 'useractioncomplete') {
-                // where eventStatus is 'useractioncomplete'  
-                console.log('eventStatus is useractioncomplete', ' + ', tcData);
-                } else if (tcData.eventStatus === 'tcloaded') {
-                // where eventStatus is 'tcloaded' 
-                console.log('eventStatus is tcloaded');
-                } else if (tcData.eventStatus === 'cmpuishown') {
-                // where eventStatus is 'cmpuishown'
-                console.log('eventStatus is cmpuishown');
+                    console.log('tcData response:', tcData);
+
+                    __tcfapi('ping', 2, (pingReturn) => {
+                    // your custom callback code can be included here
+                    console.log("retrieving pingReturn:", pingReturn)
+                    });
+
+                    if (tcData.eventStatus === 'useractioncomplete') {
+                        // where eventStatus is 'useractioncomplete'  
+                        console.log('eventStatus is useractioncomplete', ' + ', tcData);
+                    } else if (tcData.eventStatus === 'tcloaded') {
+                    // where eventStatus is 'tcloaded' 
+                        console.log('eventStatus is tcloaded');
+                    } else if (tcData.eventStatus === 'cmpuishown') {
+                        // where eventStatus is 'cmpuishown'
+                        console.log('eventStatus is cmpuishown');
+                    }
+
                 }
-
-            }
             }
 
             function callback_function_gvl(gvl, success)  {
-            console.log("getVendorPurposeMapping response: ", gvl, " + ", success)
+                console.log("getVendorPurposeMapping response: ", gvl, " + ", success)
             }
 
             function callback_function_cstm(gvl, success)  {
-            console.log("getCustomVendorConsents response: ", gvl, " + ", success)
+                console.log("getCustomVendorConsents response: ", gvl, " + ", success)
             }
 
             function callback_function_pcc(data, success)  {
-            console.log("postCustomConsent callback")
-            console.log("postCustomConsent response: ", data, success)
+                console.log("postCustomConsent callback")
+                console.log("postCustomConsent response: ", data, success)
             }
 
             //window._sp_.getCustomVendorConsents((vendorConsents, success) => console.log(vendorConsents));
