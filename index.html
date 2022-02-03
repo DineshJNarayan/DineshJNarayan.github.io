@@ -103,9 +103,9 @@
                             console.log('onPMCancel message_type >> ', message_type);
                         },
                     
-                        onMessageReceiveData: function (data) {
-                            console.log('onMessageReceiveData >> ', data);
-                            console.log(JSON.stringify(data));
+                        onMessageReceiveData: function (message_type, data) {
+                            console.log('onMessageReceiveData message_type >> ', message_type);
+                            console.log('onMessageReceiveData data >> ',JSON.stringify(data));
                         },
                     
                         onSPPMObjectReady: function () {
