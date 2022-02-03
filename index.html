@@ -79,14 +79,19 @@
                         },
                     
                         onMessageChoiceSelect: function (message_type, choice_id, choice_type_id) {
-                            console.log('onMessonMessageChoiceSelectageReady message_type >> ', message_type);
-                            console.log('onMessageChoiceSelect choice_id >> ', choice_id);
-                            console.log('onMessageChoiceSelect choice_type_id >> ', choice_type_id);
+                            document.getElementById("onmessagechoiceselect_message_type").innerHTML = message_type;
+                            document.getElementById("onmessagechoiceselect_choice_id").innerHTML = choice_id;
+                            document.getElementById("onmessagechoiceselect_choice_type_id").innerHTML = choice_type_id;
+                            //console.log('onMessonMessageChoiceSelectageReady message_type >> ', message_type);
+                            //console.log('onMessageChoiceSelect choice_id >> ', choice_id);
+                            //console.log('onMessageChoiceSelect choice_type_id >> ', choice_type_id);
                         },
                     
                         onPrivacyManagerAction: function (message_type, pmData) {
-                            console.log('onPrivacyManagerAction message_type >> ', message_type);
-                            console.log('onPrivacyManagerAction pmData >> ', pmData);
+                            document.getElementById("onprivacymanageraction_message_type").innerHTML = message_type;
+                            document.getElementById("onprivacymanageraction_pmdata").innerHTML = JSON.stringify(pmData);
+                            //console.log('onPrivacyManagerAction message_type >> ', message_type);
+                            //console.log('onPrivacyManagerAction pmData >> ', pmData);
                         },
                     
                         onMessageChoiceError: function (message_type, err) {
@@ -251,10 +256,7 @@
         <div class="w3-content w3-container w3-padding-64" id="about">
             <!-- onMessageReady Output-->
             <h3 class="w3-center">onMessageReady event callback</h3>
-            <p>onConsentReady fires when the consent object is ready and returns one valus:</p>
-            <ul>
-                <li><code>message_type</code></li>
-            </ul>
+            <p>onConsentReady fires when the consent object is ready and returns one value:</p>
             <table border="0">
                 <tbody>
                     <tr>
@@ -265,15 +267,56 @@
                     </tr>
                 </tbody>
             </table>
-            <!-- onMessageReady Output-->
-            <!-- onConsentReady Output-->
+            <!-- onMessageReady Output -->
+            <!-- onMessageChoiceSelect Output -->
+            <h3 class="w3-center">onMessageChoiceSelect event callback</h3>
+            <p>onMessageChoiceSelect fires when the consent object is ready and returns three values:</p>
+            <table border="0">
+                <tbody>
+                    <tr>
+                        <td style="width: 50%; background-color: #dae4eb;">
+                            <code>message_type</code>
+                        </td>
+                        <td id="onmessagechoiceselect_message_type" style="width: 50%; align-content: center;"></td>
+                    </tr>
+                    <tr>
+                        <td style="width: 50%; background-color: #dae4eb;">
+                            <code>choice_id</code>
+                        </td>
+                        <td id="onmessagechoiceselect_choice_id" style="width: 50%; align-content: center;"></td>
+                    </tr>
+                    <tr>
+                        <td style="width: 50%; background-color: #dae4eb;">
+                            <code>choice_type_id</code>
+                        </td>
+                        <td id="onmessagechoiceselect_choice_type_id" style="width: 50%; align-content: center;"></td>
+                    </tr>
+                </tbody>
+            </table>
+            <!-- onMessageChoiceSelect Output -->
+            <!-- onPrivacyManagerAction Output -->
+            <h3 class="w3-center">onPrivacyManagerAction event callback</h3>
+            <p>onPrivacyManagerAction fires when a button in a privacy manager has been clicked. This callback return two values:</p>
+            <table border="0">
+                <tbody>
+                    <tr>
+                        <td style="width: 50%; background-color: #dae4eb;">
+                            <code>message_type</code>
+                        </td>
+                        <td id="onprivacymanageraction_message_type" style="width: 50%; align-content: center;"></td>
+                    </tr>
+                    <tr>
+                        <td style="width: 50%; background-color: #dae4eb;">
+                            <code>pmData</code>
+                        </td>
+                        <td id="onprivacymanageraction_pmdata" style="width: 50%; align-content: center;"></td>
+                    </tr>
+                </tbody>
+            </table>
+            <!-- onPrivacyManagerAction Output -->
+            <!-- onConsentReady Output -->
             <h3 class="w3-center">onConsentReady event callback</h3>
             <p>onConsentReady fires when the consent object is ready and returns three values:</p>
-            <ul>
-                <li><code>message_type</code></li>
-                <li><code>consentuuid</code></li>
-                <li><code>euconsent</code></li>
-            </ul>
             <table border="0">
                 <tbody>
                     <tr>
@@ -296,7 +339,7 @@
                     </tr>
                 </tbody>
             </table>    
-            <!-- onConsentReady Output-->
+            <!-- onConsentReady Output -->
             <div class="w3-row">
                 <div class="w3-col m6 w3-center w3-padding-large">
                     <p><b><i class="fa fa-user w3-margin-right"></i>My Name</b></p><br>
