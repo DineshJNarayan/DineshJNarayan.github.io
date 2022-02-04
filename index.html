@@ -9,11 +9,49 @@
 
     <style>
 
-        body,h1,h2,h3,h4,h5,h6 {font-family: "Lato", sans-serif;}
+        body,h1,h2,h3,h4,h5,h6 {font-family: "Lato", sans-serif; text-align: center; padding: 20px 0;}
         body, html {
             height: 100%;
             color: #777;
             line-height: 1.8;
+        }
+
+        body.caption {
+            color: #FFFFFF;
+            background-color: #E4E4E4;
+        }
+
+        table.d {
+            table-layout: fixed;
+            width: 100%;  
+        }
+
+        .table-bordered {
+            border: 1px solid #ddd !important;
+        }
+
+        table caption {
+	        padding: .5em 0;
+        }
+
+        @media screen and (max-width: 767px) {
+            table caption {
+                display: none;
+            }
+        }
+
+        .p {
+            text-align: center;
+            padding-top: 140px;
+            font-size: 14px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+            padding-left: 10px;
+            padding-right: 10px;
         }
 
         /* Create a Parallax Effect */
@@ -45,14 +83,6 @@
         .w3-wide {letter-spacing: 10px;}
         .w3-hover-opacity {cursor: pointer;}
 
-        /* Turn off parallax scrolling for tablets and phones */
-        @media only screen and (max-device-width: 1600px) {
-            .bgimg-1, .bgimg-2, .bgimg-3 {
-                background-attachment: scroll;
-                min-height: 400px;
-            }
-        }
-
     </style>
 
     <body>
@@ -69,6 +99,7 @@
             window._sp_ = {
                 config: {
                     accountId: 1732,
+                    //propertyHref: "https://dineshjnarayan.github.io/",
                     baseEndpoint: 'https://cdn.privacy-mgmt.com',
                     gdpr: { },
                     events: {
@@ -256,14 +287,14 @@
         <div class="w3-content w3-container w3-padding-64" id="about">
             <!-- onMessageReady Output-->
             <h3 class="w3-center">onMessageReady event callback</h3>
-            <p>onConsentReady fires when the consent object is ready and returns one value:</p>
-            <table border="0">
+            <table class="d table-bordered table-hover">
+                <caption style="color: #FFFFFF; background-color: #E4E4E4;" class="table-bordered table-hover">onConsentReady fires when the consent object is ready and returns one value</caption>
                 <tbody>
                     <tr>
                         <td style="width: 50%; background-color: #dae4eb;">
                             <code>message_type</code>
                         </td>
-                        <td id="onmessageready_message_type" style="width: 50%; align-content: center;"></td>
+                        <td id="onmessageready_message_type" style="width: 50%; align-content: center; background-color: #ECE9E7"></td>
                     </tr>
                 </tbody>
             </table>
@@ -271,26 +302,26 @@
             <hr>
             <!-- onMessageChoiceSelect Output -->
             <h3 class="w3-center">onMessageChoiceSelect event callback</h3>
-            <p>onMessageChoiceSelect fires when the consent object is ready and returns three values:</p>
-            <table border="0">
+            <table class="d table-bordered table-hover">
+                <caption style="color: #FFFFFF; background-color: #E4E4E4;" class="table-bordered table-hover">onMessageChoiceSelect fires when the consent object is ready and returns three values</caption>
                 <tbody>
                     <tr>
                         <td style="width: 50%; background-color: #dae4eb;">
                             <code>message_type</code>
                         </td>
-                        <td id="onmessagechoiceselect_message_type" style="width: 50%; align-content: center;"></td>
+                        <td id="onmessagechoiceselect_message_type" style="width: 50%; align-content: center; background-color: #ECE9E7""></td>
                     </tr>
                     <tr>
                         <td style="width: 50%; background-color: #dae4eb;">
                             <code>choice_id</code>
                         </td>
-                        <td id="onmessagechoiceselect_choice_id" style="width: 50%; align-content: center;"></td>
+                        <td id="onmessagechoiceselect_choice_id" style="width: 50%; align-content: center; background-color: #ECE9E7""></td>
                     </tr>
                     <tr>
                         <td style="width: 50%; background-color: #dae4eb;">
                             <code>choice_type_id</code>
                         </td>
-                        <td id="onmessagechoiceselect_choice_type_id" style="width: 50%; align-content: center;"></td>
+                        <td id="onmessagechoiceselect_choice_type_id" style="width: 50%; align-content: center; background-color: #ECE9E7""></td>
                     </tr>
                 </tbody>
             </table>
@@ -298,20 +329,20 @@
             <hr>
             <!-- onPrivacyManagerAction Output -->
             <h3 class="w3-center">onPrivacyManagerAction event callback</h3>
-            <p>onPrivacyManagerAction fires when a button in a privacy manager has been clicked. This callback return two values:</p>
-            <table border="0">
+            <table class="d table-bordered table-hover">
+                <caption style="color: #FFFFFF; background-color: #E4E4E4;" class="table-bordered table-hover">onPrivacyManagerAction fires when a button in a privacy manager has been clicked. This callback return two values</caption>
                 <tbody>
                     <tr>
                         <td style="width: 50%; background-color: #dae4eb;">
                             <code>message_type</code>
                         </td>
-                        <td id="onprivacymanageraction_message_type" style="width: 50%; align-content: center;"></td>
+                        <td id="onprivacymanageraction_message_type" style="width: 50%; align-content: center; background-color: #ECE9E7""></td>
                     </tr>
                     <tr>
                         <td style="width: 50%; background-color: #dae4eb;">
                             <code>pmData</code>
                         </td>
-                        <td id="onprivacymanageraction_pmdata" style="width: 50%; align-content: center;"></td>
+                        <td id="onprivacymanageraction_pmdata" style="width: 50%; align-content: center; background-color: #ECE9E7""></td>
                     </tr>
                 </tbody>
             </table>
@@ -319,26 +350,34 @@
             <hr>
             <!-- onConsentReady Output -->
             <h3 class="w3-center">onConsentReady event callback</h3>
-            <p>onConsentReady fires when the consent object is ready and returns three values:</p>
-            <table border="0">
+            <table class="d table-bordered table-hover">
+                <caption style="color: #FFFFFF; background-color: #E4E4E4;" class="table-bordered table-hover">onConsentReady fires when the consent object is ready and returns three values</caption>
                 <tbody>
                     <tr>
                         <td style="width: 50%; background-color: #dae4eb;">
                             <code>message_type</code>
                         </td>
-                        <td id="onconsentready_message_type" style="width: 50%; align-content: center;"></td>
+                        <td id="onconsentready_message_type" style="width: 50%; align-content: center; background-color: #ECE9E7""></td>
                     </tr>
                     <tr>
                         <td style="width: 50%; background-color: #dae4eb;">
                             <code>consentuuid</code>
                         </td>
-                        <td id="onconsentready_consentuuid" style="width: 50%; align-content: center;"></td>
+                        <td id="onconsentready_consentuuid" style="width: 50%; align-content: center; background-color: #ECE9E7""></td>
                     </tr>
+                </tbody>
+            </table>
+            <p></p>
+            <table class="table table-bordered table-hover">
+                <caption style="color: #FFFFFF; background-color: #E4E4E4;" class="table-bordered table-hover">The end-user TC string</caption>
+                <tbody>
                     <tr>
-                        <td style="width: 50%; background-color: #dae4eb;">
+                        <td style="background-color: #dae4eb;">
                             <code>euconsent</code>
                         </td>
-                        <td id="onconsentready_euconsent" style="width: 50%; align-content: center;"></td>
+                    </tr>
+                    <tr>
+                        <td id="onconsentready_euconsent" style="align-content: center; background-color: #ECE9E7""></td>
                     </tr>
                 </tbody>
             </table>    
