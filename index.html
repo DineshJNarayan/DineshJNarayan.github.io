@@ -170,51 +170,43 @@
             window.onload = function() {
                 __tcfapi('ping', 2, function(pingReturn) {
                     document.getElementById("callping_tcfapi").innerHTML = JSON.stringify(pingReturn);
-                    console.log("ping callback:")
+                    console.log("ping callback")
                 });
             }
+
+            __tcfapi('addEventListener', 2, function(tcdata, success) {
+                // to generate error change tcdata -> tcData >> next documentation
+                if(success) {
+                    __tcfapi('ping', 2, (pingReturn) => {
+                        document.getElementById("callping_tcfapi").innerHTML = JSON.stringify(pingReturn);
+                        console.log("addEventListener::ping callback")
+                    });
+                    if (tcdata.eventStatus === 'useractioncomplete') {
+                        document.getElementById("tcfapi_gettcdata_success").innerHTML = success;
+                        document.getElementById("tcfapi_gettcdata").innerHTML = JSON.stringify(tcdata);
+                        console.log('addEventListener::eventStatus is useractioncomplete');  
+                        console.log('addEventListener::useractioncomplete::tcdata callback');
+                    } else if (tcdata.eventStatus === 'tcloaded') {
+                        document.getElementById("tcfapi_gettcdata_success").innerHTML = success;
+                        document.getElementById("tcfapi_gettcdata").innerHTML = JSON.stringify(tcdata);
+                        console.log('addEventListener::eventStatus is tcloaded');
+                    } else if (tcdata.eventStatus === 'cmpuishown') {
+                        console.log('addEventListener::eventStatus is cmpuishown');
+                    }
+                }
+            });
 
             __tcfapi('getTCData', 2, function(tcdata, success) {
                 document.getElementById("tcfapi_gettcdata_success").innerHTML = success;
                 document.getElementById("tcfapi_gettcdata").innerHTML = JSON.stringify(tcdata);
-                console.log("getTCData callback:")
+                console.log("getTCData callback");
             });
 
             __tcfapi('getVendorPurposeMapping', 2, function(gvl, success) {
                 document.getElementById("tcfapi_getvendorpurposemapping_success").innerHTML = success;
                 document.getElementById("tcfapi_getvendorpurposemapping").innerHTML = JSON.stringify(gvl);
-                console.log("getVendorPurposeMapping callback:")
-                //console.log("getVendorPurposeMapping response: ", gvl, " + ", success);
+                console.log("getVendorPurposeMapping callback")
             });
-
-            function callback_function(tcData, success) {
-                // your custom callback code can be included here
-                if(success) {
-
-                    console.log('tcData response:', tcData);
-
-                    __tcfapi('ping', 2, (pingReturn) => {
-                    // your custom callback code can be included here
-                    console.log("retrieving pingReturn:", pingReturn)
-                    });
-
-                    if (tcData.eventStatus === 'useractioncomplete') {
-                        // where eventStatus is 'useractioncomplete'  
-                        console.log('eventStatus is useractioncomplete', ' + ', tcData);
-                    } else if (tcData.eventStatus === 'tcloaded') {
-                    // where eventStatus is 'tcloaded' 
-                        console.log('eventStatus is tcloaded');
-                    } else if (tcData.eventStatus === 'cmpuishown') {
-                        // where eventStatus is 'cmpuishown'
-                        console.log('eventStatus is cmpuishown');
-                    }
-
-                }
-            }
-
-            function callback_function_gvl(gvl, success)  {
-                console.log("getVendorPurposeMapping response: ", gvl, " + ", success)
-            }
 
             function callback_function_cstm(gvl, success)  {
                 console.log("getCustomVendorConsents response: ", gvl, " + ", success)
@@ -228,8 +220,6 @@
             //window._sp_.getCustomVendorConsents((vendorConsents, success) => console.log(vendorConsents));
             //console.log(window._sp_.config.accountId);
             //window._sp_.getCustomVendorConsents();
-
-            //__tcfapi('addEventListener', 2, callback_function); 
 
             //console.log("getCustomVendorConsents call")
             //__tcfapi('getCustomVendorConsents', 2, callback_function_cstm);
@@ -262,7 +252,6 @@
             //__tcfapi('getCustomVendorConsents', 2, (vendorPurposeMapping, success) => { console.log(vendorPurposeMapping); });
 
         </script>
-        <!-- <script src="https://cdn.privacy-mgmt.com/wrapperMessagingWithoutDetection.js"></script> -->
         <script src='https://cdn.privacy-mgmt.com/unified/wrapperMessagingWithoutDetection.js' async></script>
 
         <!-- Navbar (sit on top) -->
