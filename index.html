@@ -106,23 +106,20 @@
 
                         onMessageReady: function (message_type) {
                             document.getElementById("onmessageready_message_type").innerHTML = message_type;
-                            //console.log('onMessageReady message_type >> ', message_type);
+                            console.log('onMessageReady callback ');
                         },
                     
                         onMessageChoiceSelect: function (message_type, choice_id, choice_type_id) {
                             document.getElementById("onmessagechoiceselect_message_type").innerHTML = message_type;
                             document.getElementById("onmessagechoiceselect_choice_id").innerHTML = choice_id;
                             document.getElementById("onmessagechoiceselect_choice_type_id").innerHTML = choice_type_id;
-                            //console.log('onMessonMessageChoiceSelectageReady message_type >> ', message_type);
-                            //console.log('onMessageChoiceSelect choice_id >> ', choice_id);
-                            //console.log('onMessageChoiceSelect choice_type_id >> ', choice_type_id);
+                            console.log('onMessageChoiceSelect callback');
                         },
                     
                         onPrivacyManagerAction: function (message_type, pmData) {
                             document.getElementById("onprivacymanageraction_message_type").innerHTML = message_type;
                             document.getElementById("onprivacymanageraction_pmdata").innerHTML = JSON.stringify(pmData);
-                            //console.log('onPrivacyManagerAction message_type >> ', message_type);
-                            //console.log('onPrivacyManagerAction pmData >> ', pmData);
+                            console.log('onPrivacyManagerAction callback');
                         },
                     
                         onMessageChoiceError: function (message_type, err) {
@@ -134,23 +131,23 @@
                             document.getElementById("onconsentready_message_type").innerHTML = message_type;
                             document.getElementById("onconsentready_consentuuid").innerHTML = consentUUID;
                             document.getElementById("onconsentready_euconsent").innerHTML = euconsent;
-                            //console.log('onConsentReady message_type >> ', message_type);
-                            //console.log('onConsentReady consentUUID >> ', consentUUID);
-                            //console.log('onConsentReady euconsent >>', euconsent);
+                            console.log('onConsentReady callback');
                         },
                     
                         onPMCancel: function (message_type) {
-                            console.log('onPMCancel message_type >> ', message_type);
+                            document.getElementById("onpmcancel_message_type").innerHTML = message_type;
+                            console.log('onPMCancel callback');
                         },
                     
                         onMessageReceiveData: function (message_type, data) {
-                            console.log('onMessageReceiveData message_type >> ', message_type);
-                            console.log('onMessageReceiveData data >>', data)
-                            console.log('onMessageReceiveData data (stringify) >> ',JSON.stringify(data));
+                            document.getElementById("onmessagereceivedata_message_type").innerHTML = message_type;
+                            document.getElementById("onmessagereceivedata_data").innerHTML = JSON.stringify(data);
+                            console.log('onMessageReceiveData callback');
                         },
                     
                         onSPPMObjectReady: function () {
-                            console.log('onSPPMObjectReady');
+                            document.getElementById("onsppmobjectready").innerHTML = "yes";
+                            console.log('onSPPMObjectReady callback');
                         },
 
                         onError: function (message_type, errorCode, errorObject, userReset) {
@@ -169,6 +166,26 @@
                 //}
 
             }
+
+            window.onload = function() {
+                __tcfapi('ping', 2, function(pingReturn) {
+                    document.getElementById("callping_tcfapi").innerHTML = JSON.stringify(pingReturn);
+                    console.log("ping callback:")
+                });
+            }
+
+            __tcfapi('getTCData', 2, function(tcdata, success) {
+                document.getElementById("tcfapi_gettcdata_success").innerHTML = success;
+                document.getElementById("tcfapi_gettcdata").innerHTML = JSON.stringify(tcdata);
+                console.log("getTCData callback:")
+            });
+
+            __tcfapi('getVendorPurposeMapping', 2, function(gvl, success) {
+                document.getElementById("tcfapi_getvendorpurposemapping_success").innerHTML = success;
+                document.getElementById("tcfapi_getvendorpurposemapping").innerHTML = JSON.stringify(gvl);
+                console.log("getVendorPurposeMapping callback:")
+                //console.log("getVendorPurposeMapping response: ", gvl, " + ", success);
+            });
 
             function callback_function(tcData, success) {
                 // your custom callback code can be included here
@@ -213,11 +230,6 @@
             //window._sp_.getCustomVendorConsents();
 
             //__tcfapi('addEventListener', 2, callback_function); 
-
-            //Sourcepoint getVendorPurposeMapping command that overrides the IAB 'getVendorList' command?
-            //console.log("getVendorPurposeMapping call")
-            //__tcfapi('getVendorPurposeMapping', 2, callback_function_gvl);
-            //__tcfapi('getVendorPurposeMapping', 2, function(gvl, success) {console.log("getVendorPurposeMapping response: ", gvl, " + ", success);});
 
             //console.log("getCustomVendorConsents call")
             //__tcfapi('getCustomVendorConsents', 2, callback_function_cstm);
@@ -286,7 +298,7 @@
         <!-- Container (About Section) -->
         <div class="w3-content w3-container w3-padding-64" id="about">
             <!-- onMessageReady Output-->
-            <h3 class="w3-center">onMessageReady event callback</h3>
+            <h5 class="w3-center">onMessageReady event callback</h5>
             <table class="d table-bordered table-hover">
                 <caption style="color: #FFFFFF; background-color: #E4E4E4;" class="table-bordered table-hover">onConsentReady fires when the consent object is ready and returns one value</caption>
                 <tbody>
@@ -298,10 +310,11 @@
                     </tr>
                 </tbody>
             </table>
+            <h5 class="w3-center"></h5>
             <!-- onMessageReady Output -->
             <hr>
             <!-- onMessageChoiceSelect Output -->
-            <h3 class="w3-center">onMessageChoiceSelect event callback</h3>
+            <h5 class="w3-center">onMessageChoiceSelect event callback</h5>
             <table class="d table-bordered table-hover">
                 <caption style="color: #FFFFFF; background-color: #E4E4E4;" class="table-bordered table-hover">onMessageChoiceSelect fires when the consent object is ready and returns three values</caption>
                 <tbody>
@@ -325,10 +338,27 @@
                     </tr>
                 </tbody>
             </table>
+            <h5 class="w3-center"></h5>
             <!-- onMessageChoiceSelect Output -->
             <hr>
+            <!-- onSPPMObjectReady Output -->
+            <h5 class="w3-center">onSPPMObjectReady event callback</h5>
+            <table class="d table-bordered table-hover">
+                <caption style="color: #FFFFFF; background-color: #E4E4E4;" class="table-bordered table-hover">onPrivacyManagerAction fires when a button in a privacy manager has been clicked. This callback return two values</caption>
+                <tbody>
+                    <tr>
+                        <td style="width: 50%; background-color: #dae4eb;">
+                            <code>onSPPMObjectReady</code>
+                        </td>
+                        <td id="onsppmobjectready" style="width: 50%; align-content: center; background-color: #ECE9E7"">no</td>
+                    </tr>
+                </tbody>
+            </table>
+            <h5 class="w3-center"></h5>
+            <!-- onSPPMObjectReady Output -->
+            <hr>
             <!-- onPrivacyManagerAction Output -->
-            <h3 class="w3-center">onPrivacyManagerAction event callback</h3>
+            <h5 class="w3-center">onPrivacyManagerAction event callback</h5>
             <table class="d table-bordered table-hover">
                 <caption style="color: #FFFFFF; background-color: #E4E4E4;" class="table-bordered table-hover">onPrivacyManagerAction fires when a button in a privacy manager has been clicked. This callback return two values</caption>
                 <tbody>
@@ -346,10 +376,11 @@
                     </tr>
                 </tbody>
             </table>
+            <h5 class="w3-center"></h5>
             <!-- onPrivacyManagerAction Output -->
             <hr>
             <!-- onConsentReady Output -->
-            <h3 class="w3-center">onConsentReady event callback</h3>
+            <h5 class="w3-center">onConsentReady event callback</h5>
             <table class="d table-bordered table-hover">
                 <caption style="color: #FFFFFF; background-color: #E4E4E4;" class="table-bordered table-hover">onConsentReady fires when the consent object is ready and returns three values</caption>
                 <tbody>
@@ -380,8 +411,48 @@
                         <td id="onconsentready_euconsent" style="align-content: center; background-color: #ECE9E7""></td>
                     </tr>
                 </tbody>
-            </table>    
+            </table>
+            <h5 class="w3-center"></h5>    
             <!-- onConsentReady Output -->
+            <hr>
+            <!-- onMessageReceiveData Output -->
+            <h5 class="w3-center">onMessageReceiveData event callback</h5>
+            <table class="d table-bordered table-hover">
+                <caption style="color: #FFFFFF; background-color: #E4E4E4;" class="table-bordered table-hover">Event fires when a message is displayed to the user and sends data about the message and campaign to the callback</caption>
+                <tbody>
+                    <tr>
+                        <td style="width: 50%; background-color: #dae4eb;">
+                            <code>message_type</code>
+                        </td>
+                        <td id="onmessagereceivedata_message_type" style="width: 50%; align-content: center; background-color: #ECE9E7""></td>
+                    </tr>
+                    <tr>
+                        <td style="width: 50%; background-color: #dae4eb;">
+                            <code>data</code> (JSON)
+                        </td>
+                        <td id="onmessagereceivedata_data" style="width: 50%; align-content: center; background-color: #ECE9E7""></td>
+                    </tr>
+                </tbody>
+            </table>
+            <h5 class="w3-center"></h5>
+            <!-- onMessageReceiveData Output -->
+            <hr>
+            <!-- onPMCancel Output -->
+            <h5 class="w3-center">onPMCancel event callback</h5>
+            <table class="d table-bordered table-hover">
+                <caption style="color: #FFFFFF; background-color: #E4E4E4;" class="table-bordered table-hover">Event callback fires when a user clicks the privacy manager's cancel button. This callback returns the message_type</caption>
+                <tbody>
+                    <tr>
+                        <td style="width: 50%; background-color: #dae4eb;">
+                            <code>message_type</code>
+                        </td>
+                        <td id="onpmcancel_message_type" style="width: 50%; align-content: center; background-color: #ECE9E7""></td>
+                    </tr>
+                </tbody>
+            </table>
+            <h5 class="w3-center"></h5>
+            <!-- onPMCancel Output -->
+            <hr>
             <div class="w3-row">
                 <div class="w3-col m6 w3-center w3-padding-large">
                     <p><b><i class="fa fa-user w3-margin-right"></i>My Name</b></p><br>
@@ -410,6 +481,69 @@
                 <div class="w3-container w3-padding-small w3-dark-grey w3-center" style="width:75%">75%</div>
             </div>
         </div>
+        <h5 class="w3-center"></h5>
+        <hr>
+
+<!-- Ping Output-->
+<h5 class="w3-center">__tcfapi callback - ping command</h5>
+<table class="d table-bordered table-hover">
+    <caption style="color: #FFFFFF; background-color: #E4E4E4;" class="table-bordered table-hover">The ping command informs whether or not the main CMP script has loaded and if GDPR applies. This command should be implemented and called before any other command</caption>
+    <tbody>
+        <tr>
+            <td style="width: 50%; background-color: #dae4eb;">
+                <code>ping</code>
+            </td>
+            <td id="callping_tcfapi" style="width: 50%; align-content: center; background-color: #ECE9E7"></td>
+        </tr>
+    </tbody>
+</table>
+<h5 class="w3-center"></h5>
+<!-- Ping Output -->
+<hr>
+<!-- getTCData Output-->
+<h5 class="w3-center">__tcfapi callback - getTCData command</h5>
+<table class="d table-bordered table-hover">
+    <caption style="color: #FFFFFF; background-color: #E4E4E4;" class="table-bordered table-hover">The getTCData command allows your organization to retrieve unencoded and encoded values of the TC String. The TC String also provides additional information about the CMP event status, if GDPR applies to the end-user and more</caption>
+    <tbody>
+        <tr>
+            <td style="width: 50%; background-color: #dae4eb;">
+                <code>success</code>
+            </td>
+            <td id="tcfapi_gettcdata_success" style="width: 50%; align-content: center; background-color: #ECE9E7"></td>
+        </tr>
+        <tr>
+            <td style="width: 50%; background-color: #dae4eb;">
+                <code>tcdata</code>
+            </td>
+            <td id="tcfapi_gettcdata" style="width: 50%; align-content: center; background-color: #ECE9E7"></td>
+        </tr>
+    </tbody>
+</table>
+<h5 class="w3-center"></h5>
+<!-- getTCData Output -->
+<hr>
+<!-- getVendorPurposeMapping Output-->
+<h5 class="w3-center">__tcfapi callback - getVendorPurposeMapping command</h5>
+<table class="d table-bordered table-hover">
+    <caption style="color: #FFFFFF; background-color: #E4E4E4;" class="table-bordered table-hover">The command returns a JSON object that contains information on the purposes and corresponding legal basis attributed to each vendor and their legal basis</caption>
+    <tbody>
+        <tr>
+            <td style="width: 50%; background-color: #dae4eb;">
+                <code>success</code>
+            </td>
+            <td id="tcfapi_getvendorpurposemapping_success" style="width: 50%; align-content: center; background-color: #ECE9E7"></td>
+        </tr>
+        <tr>
+            <td style="width: 50%; background-color: #dae4eb;">
+                <code>gvl</code>
+            </td>
+            <td id="tcfapi_getvendorpurposemapping" style="width: 50%; align-content: center; background-color: #ECE9E7"></td>
+        </tr>
+    </tbody>
+</table>
+<h5 class="w3-center"></h5>
+<!--getVendorPurposeMapping Output-->
+
 
         <div class="w3-row w3-center w3-dark-grey w3-padding-16">
             <div class="w3-quarter w3-section">
