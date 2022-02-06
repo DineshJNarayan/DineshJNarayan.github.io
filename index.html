@@ -170,7 +170,7 @@
             window.onload = function() {
                 __tcfapi('ping', 2, function(pingReturn) {
                     document.getElementById("callping_tcfapi").innerHTML = JSON.stringify(pingReturn);
-                    console.log("ping callback")
+                    console.log("ping api")
                 });
             }
 
@@ -179,22 +179,20 @@
                 if(success) {
                     __tcfapi('ping', 2, (pingReturn) => {
                         document.getElementById("callping_tcfapi").innerHTML = JSON.stringify(pingReturn);
-                        console.log("addEventListener::ping callback")
+                        console.log('addEventListener('+tcdata.listenerId+')::ping callback')
                     });
                     if (tcdata.eventStatus === 'useractioncomplete') {
-                        document.getElementById("tcfapi_gettcdata_function").innerHTML = "addEventListener::useractioncomplete::tcdata";
                         document.getElementById("tcfapi_gettcdata_success").innerHTML = success;
                         document.getElementById("tcfapi_gettcdata").innerHTML = JSON.stringify(tcdata);
-                        console.log('addEventListener::eventStatus is useractioncomplete');  
-                        console.log('addEventListener::useractioncomplete::tcdata callback');
+                        console.log('addEventListener('+tcdata.listenerId+')::eventStatus is useractioncomplete');  
+                        console.log('addEventListener('+tcdata.listenerId+')::useractioncomplete::tcdata api');
                     } else if (tcdata.eventStatus === 'tcloaded') {
-                        document.getElementById("tcfapi_gettcdata_function").innerHTML = "addEventListener::tcloaded::tcdata";
                         document.getElementById("tcfapi_gettcdata_success").innerHTML = success;
                         document.getElementById("tcfapi_gettcdata").innerHTML = JSON.stringify(tcdata);
-                        console.log('addEventListener::eventStatus is tcloaded');
-                        console.log('addEventListener::tcloaded::tcdata callback');
+                        console.log('addEventListener('+tcdata.listenerId+')::eventStatus is tcloaded');
+                        console.log('addEventListener('+tcdata.listenerId+')::tcloaded::tcdata api');
                     } else if (tcdata.eventStatus === 'cmpuishown') {
-                        console.log('addEventListener::eventStatus is cmpuishown');
+                        console.log('addEventListener('+tcdata.listenerId+')::eventStatus is cmpuishown');
                     }
                 }
             });
@@ -202,13 +200,13 @@
             __tcfapi('getTCData', 2, function(tcdata, success) {
                 document.getElementById("tcfapi_gettcdata_success").innerHTML = success;
                 document.getElementById("tcfapi_gettcdata").innerHTML = JSON.stringify(tcdata);
-                console.log("getTCData callback");
+                console.log("getTCData api");
             });
 
             __tcfapi('getVendorPurposeMapping', 2, function(gvl, success) {
                 document.getElementById("tcfapi_getvendorpurposemapping_success").innerHTML = success;
                 document.getElementById("tcfapi_getvendorpurposemapping").innerHTML = JSON.stringify(gvl);
-                console.log("getVendorPurposeMapping callback")
+                console.log("getVendorPurposeMapping api")
             });
 
             function callback_function_cstm(gvl, success)  {
@@ -290,9 +288,8 @@
         <!-- Container (About Section) -->
         <div class="w3-content w3-container w3-padding-64" id="about">
             <!-- onMessageReady Output-->
-            <h5 class="w3-center">onMessageReady event callback</h5>
             <table class="d table-bordered table-hover">
-                <caption style="color: #FFFFFF; background-color: #E4E4E4;" class="table-bordered table-hover">onConsentReady fires when the consent object is ready and returns one value</caption>
+                <caption style="color: #FFFFFF; background-color: #E4E4E4;" class="table-bordered table-hover"><strong>onMessageReady</strong> fires when a message is about to display. This callback returns the message_type</caption>
                 <tbody>
                     <tr>
                         <td style="width: 50%; background-color: #dae4eb;">
@@ -302,13 +299,11 @@
                     </tr>
                 </tbody>
             </table>
-            <h5 class="w3-center"></h5>
             <!-- onMessageReady Output -->
             <hr>
             <!-- onMessageChoiceSelect Output -->
-            <h5 class="w3-center">onMessageChoiceSelect event callback</h5>
             <table class="d table-bordered table-hover">
-                <caption style="color: #FFFFFF; background-color: #E4E4E4;" class="table-bordered table-hover">onMessageChoiceSelect fires when the consent object is ready and returns three values</caption>
+                <caption style="color: #FFFFFF; background-color: #E4E4E4;" class="table-bordered table-hover"><strong>onMessageChoiceSelect</strong> fires when the consent object is ready and returns three values</caption>
                 <tbody>
                     <tr>
                         <td style="width: 50%; background-color: #dae4eb;">
@@ -330,13 +325,11 @@
                     </tr>
                 </tbody>
             </table>
-            <h5 class="w3-center"></h5>
             <!-- onMessageChoiceSelect Output -->
             <hr>
             <!-- onSPPMObjectReady Output -->
-            <h5 class="w3-center">onSPPMObjectReady event callback</h5>
             <table class="d table-bordered table-hover">
-                <caption style="color: #FFFFFF; background-color: #E4E4E4;" class="table-bordered table-hover">onPrivacyManagerAction fires when a button in a privacy manager has been clicked. This callback return two values</caption>
+                <caption style="color: #FFFFFF; background-color: #E4E4E4;" class="table-bordered table-hover"><strong>onSPPMObjectReady</strong> fires when the privacy manager is ready to be displayed on the page</caption>
                 <tbody>
                     <tr>
                         <td style="width: 50%; background-color: #dae4eb;">
@@ -346,13 +339,11 @@
                     </tr>
                 </tbody>
             </table>
-            <h5 class="w3-center"></h5>
             <!-- onSPPMObjectReady Output -->
             <hr>
             <!-- onPrivacyManagerAction Output -->
-            <h5 class="w3-center">onPrivacyManagerAction event callback</h5>
             <table class="d table-bordered table-hover">
-                <caption style="color: #FFFFFF; background-color: #E4E4E4;" class="table-bordered table-hover">onPrivacyManagerAction fires when a button in a privacy manager has been clicked. This callback return two values</caption>
+                <caption style="color: #FFFFFF; background-color: #E4E4E4;" class="table-bordered table-hover"><strong>onPrivacyManagerAction</strong> fires when a button in a privacy manager has been clicked. This callback returns two values</caption>
                 <tbody>
                     <tr>
                         <td style="width: 50%; background-color: #dae4eb;">
@@ -368,13 +359,11 @@
                     </tr>
                 </tbody>
             </table>
-            <h5 class="w3-center"></h5>
             <!-- onPrivacyManagerAction Output -->
             <hr>
             <!-- onConsentReady Output -->
-            <h5 class="w3-center">onConsentReady event callback</h5>
             <table class="d table-bordered table-hover">
-                <caption style="color: #FFFFFF; background-color: #E4E4E4;" class="table-bordered table-hover">onConsentReady fires when the consent object is ready and returns three values</caption>
+                <caption style="color: #FFFFFF; background-color: #E4E4E4;" class="table-bordered table-hover"><strong>onConsentReady</strong> fires when the consent object is ready and returns three values</caption>
                 <tbody>
                     <tr>
                         <td style="width: 50%; background-color: #dae4eb;">
@@ -403,14 +392,12 @@
                         <td id="onconsentready_euconsent" style="align-content: center; background-color: #ECE9E7""></td>
                     </tr>
                 </tbody>
-            </table>
-            <h5 class="w3-center"></h5>    
+            </table>  
             <!-- onConsentReady Output -->
             <hr>
             <!-- onMessageReceiveData Output -->
-            <h5 class="w3-center">onMessageReceiveData event callback</h5>
             <table class="d table-bordered table-hover">
-                <caption style="color: #FFFFFF; background-color: #E4E4E4;" class="table-bordered table-hover">Event fires when a message is displayed to the user and sends data about the message and campaign to the callback</caption>
+                <caption style="color: #FFFFFF; background-color: #E4E4E4;" class="table-bordered table-hover"><strong>onMessageReceiveData</strong> fires when a message is displayed to the user and sends data about the message and campaign to the callback</caption>
                 <tbody>
                     <tr>
                         <td style="width: 50%; background-color: #dae4eb;">
@@ -426,13 +413,11 @@
                     </tr>
                 </tbody>
             </table>
-            <h5 class="w3-center"></h5>
             <!-- onMessageReceiveData Output -->
             <hr>
             <!-- onPMCancel Output -->
-            <h5 class="w3-center">onPMCancel event callback</h5>
             <table class="d table-bordered table-hover">
-                <caption style="color: #FFFFFF; background-color: #E4E4E4;" class="table-bordered table-hover">Event callback fires when a user clicks the privacy manager's cancel button. This callback returns the message_type</caption>
+                <caption style="color: #FFFFFF; background-color: #E4E4E4;" class="table-bordered table-hover"><strong>onPMCancel</strong> callback fires when a user clicks the privacy manager's cancel button. This callback returns the message_type</caption>
                 <tbody>
                     <tr>
                         <td style="width: 50%; background-color: #dae4eb;">
@@ -442,7 +427,6 @@
                     </tr>
                 </tbody>
             </table>
-            <h5 class="w3-center"></h5>
             <!-- onPMCancel Output -->
             <hr>
             <div class="w3-row">
@@ -473,14 +457,11 @@
                 <div class="w3-container w3-padding-small w3-dark-grey w3-center" style="width:75%">75%</div>
             </div>
         </div>
-        <h5 class="w3-center"></h5>
         <hr>
 
-
 <!-- Ping Output-->
-<h5 class="w3-center">__tcfapi callback - ping command</h5>
 <table class="d table-bordered table-hover">
-    <caption style="color: #FFFFFF; background-color: #E4E4E4;" class="table-bordered table-hover">The ping command informs whether or not the main CMP script has loaded and if GDPR applies. This command should be implemented and called before any other command</caption>
+    <caption style="color: #FFFFFF; background-color: #E4E4E4;" class="table-bordered table-hover"><strong>ping</strong> command informs whether or not the main CMP script has loaded and if GDPR applies. This command should be implemented and called before any other command</caption>
     <tbody>
         <tr>
             <td style="width: 50%; background-color: #dae4eb;">
@@ -490,20 +471,12 @@
         </tr>
     </tbody>
 </table>
-<h5 class="w3-center"></h5>
 <!-- Ping Output -->
 <hr>
 <!-- getTCData Output-->
-<h5 class="w3-center">__tcfapi callback - getTCData command</h5>
 <table class="d table-bordered table-hover">
-    <caption style="color: #FFFFFF; background-color: #E4E4E4;" class="table-bordered table-hover">The getTCData command allows your organization to retrieve unencoded and encoded values of the TC String. The TC String also provides additional information about the CMP event status, if GDPR applies to the end-user and more</caption>
+    <caption style="color: #FFFFFF; background-color: #E4E4E4;" class="table-bordered table-hover"><strong>getTCData</strong> command allows your organization to retrieve unencoded and encoded values of the TC String. The TC String also provides additional information about the CMP event status, if GDPR applies to the end-user and more</caption>
     <tbody>
-        <tr>
-            <td style="width: 50%; background-color: #dae4eb;">
-                <code>addEventListener call</code>
-            </td>
-            <td id="tcfapi_gettcdata_function" style="width: 50%; align-content: center; background-color: #ECE9E7"></td>
-        </tr>
         <tr>
             <td style="width: 50%; background-color: #dae4eb;">
                 <code>success</code>
@@ -518,13 +491,11 @@
         </tr>
     </tbody>
 </table>
-<h5 class="w3-center"></h5>
 <!-- getTCData Output -->
 <hr>
 <!-- getVendorPurposeMapping Output-->
-<h5 class="w3-center">__tcfapi callback - getVendorPurposeMapping command</h5>
 <table class="d table-bordered table-hover">
-    <caption style="color: #FFFFFF; background-color: #E4E4E4;" class="table-bordered table-hover">The command returns a JSON object that contains information on the purposes and corresponding legal basis attributed to each vendor and their legal basis</caption>
+    <caption style="color: #FFFFFF; background-color: #E4E4E4;" class="table-bordered table-hover"><strong>getVendorPurposeMapping</strong> command returns a JSON object that contains information on the purposes and corresponding legal basis attributed to each vendor and their legal basis</caption>
     <tbody>
         <tr>
             <td style="width: 50%; background-color: #dae4eb;">
@@ -540,7 +511,7 @@
         </tr>
     </tbody>
 </table>
-<h5 class="w3-center"></h5>
+<h5></h5>
 <!--getVendorPurposeMapping Output-->
 
 
