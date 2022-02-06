@@ -95,7 +95,7 @@
         </script>
 
         <script>
-            function output_to_tables(elementids, cell_values)   {
+            function output_to_table(elementids, cell_values)   {
                 //var table = document.getElementById(table_name);
                 //for (let i = 0; i < elementids.length; i++) {
                 //    var row = table.insertRow(0);
@@ -128,14 +128,14 @@
                         onMessageChoiceSelect: function (message_type, choice_id, choice_type_id) {
                             const elementids = ["onmessagechoiceselect_message_type", "onmessagechoiceselect_choice_id", "onmessagechoiceselect_choice_type_id"];
                             const cell_values = [message_type, choice_id, choice_type_id];
-                            output_to_tables(elementids, cell_values);
+                            output_to_table(elementids, cell_values);
                             console.log('onMessageChoiceSelect callback');
                         },
                     
                         onPrivacyManagerAction: function (message_type, pmData) {
                             const elementids = ["onprivacymanageraction_message_type", "onprivacymanageraction_pmdata"];
                             const cell_values = [message_type, JSON.stringify(pmData)];
-                            output_to_tables(elementids, cell_values);
+                            output_to_table(elementids, cell_values);
                             console.log('onPrivacyManagerAction callback');
                         },
                     
@@ -147,7 +147,7 @@
                         onConsentReady: function (message_type, consentUUID, euconsent) {
                             const elementids = ["onconsentready_message_type", "onconsentready_consentuuid", "onconsentready_euconsent"];
                             const cell_values = [message_type, consentUUID, euconsent];
-                            output_to_tables(elementids, cell_values);
+                            output_to_table(elementids, cell_values);
                             console.log('onConsentReady callback');
                         },
                     
@@ -160,7 +160,7 @@
                             //document.getElementById("onmessagereceivedata_data").innerHTML = JSON.stringify(data);
                             const elementids = ["onmessagereceivedata_message_type", "onmessagereceivedata_data_prtnuuid", "onmessagereceivedata_data_messageid", "onmessagereceivedata_data_messagedescription", "onmessagereceivedata_data_bucket", "onmessagereceivedata_data_uuid", "onmessagereceivedata_data_categoryid", "onmessagereceivedata_data_subcategoryid"];
                             const cell_values = [message_type, data.prtnUUID, data.messageId, data.msgDescription, data.bucket, data.uuid, data.categoryId, data.subCategoryId];
-                            output_to_tables(elementids, cell_values);
+                            output_to_table(elementids, cell_values);
                             console.log('onMessageReceiveData callback');
                         },
                     
@@ -186,25 +186,25 @@
 
             }
 
-            function call_ping(pingReturn, message)    {
+            function show_tcfping_info(pingReturn, message)    {
                 //document.getElementById("callping_tcfapi").innerHTML = JSON.stringify(pingReturn);
                 const elementids = ["callping_tcfapi_cmpid", "callping_tcfapi_cmpversion", "callping_tcfapi_gdprapplies", "callping_tcfapi_tcfpolicyversion", "callping_tcfapi_cmploaded", "callping_tcfapi_cmpstatus", "callping_tcfapi_displaystatus", "callping_tcfapi_apiversion"];
                 const cell_values = [pingReturn.cmpId, pingReturn.cmpVersion, pingReturn.gdprApplies, pingReturn.tcfPolicyVersion, pingReturn.cmpLoaded, pingReturn.cmpStatus, pingReturn.displayStatus, pingReturn.apiVersion];
-                output_to_tables(elementids, cell_values);
+                output_to_table(elementids, cell_values);
                 console.log(message);
             }
 
-            function call_gettcdata(success, tcdata, message)   {
+            function show_tcfgettcdata_info(success, tcdata, message)   {
                 //document.getElementById("tcfapi_gettcdata").innerHTML = JSON.stringify(tcdata);
                 const elementids = ["tcfapi_gettcdata_success", "tcfapi_gettcdata_additional", "tcfapi_gettcdata_cmpid", "tcfapi_gettcdata_cmpstatus", "tcfapi_gettcdata_cmpversion", "tcfapi_gettcdata_eventStatus", "tcfapi_gettcdata_gdprapplies", "tcfapi_gettcdata_isservicespecific", "tcfapi_gettcdata_listenerid", "tcfapi_gettcdata_publishercc", "tcfapi_gettcdata_purposeonetreatment", "tcfapi_gettcdata_tcstring", "tcfapi_gettcdata_tcfpolicyversion", "tcfapi_gettcdata_usenonstandardstacks", "tcfapi_gettcdata_publisher_consents", "tcfapi_gettcdata_publisher_custompurpose", "tcfapi_gettcdata_publisher_legitimateinterests", "tcfapi_gettcdata_publisher_restrictions", "tcfapi_gettcdata_purpose_consents", "tcfapi_gettcdata_purpose_legitimateinterests", "tcfapi_gettcdata_vendor_consents", "tcfapi_gettcdata_vendor_legitimateinterests"];
                 const cell_values = [success, tcdata.addtlConsent, tcdata.cmpId, tcdata.cmpStatus, tcdata.cmpVersion, tcdata.eventStatus, tcdata.gdprApplies, tcdata.isServiceSpecific, tcdata.listenerId, tcdata.publisherCC, tcdata.purposeOneTreatment, tcdata.tcString, tcdata.tcfPolicyVersion, tcdata.useNonStandardStacks, JSON.stringify(tcdata.publisher.consents), JSON.stringify(tcdata.publisher.customPurpose), JSON.stringify(tcdata.publisher.legitimateInterests), JSON.stringify(tcdata.publisher.restrictions), JSON.stringify(tcdata.purpose.consents), JSON.stringify(tcdata.purpose.legitimateInterests), JSON.stringify(tcdata.vendor.consents), JSON.stringify(tcdata.vendor.legitimateInterests)];
-                output_to_tables(elementids, cell_values);
+                output_to_table(elementids, cell_values);
                 console.log(message);
             }
 
             window.onload = function() {
                 __tcfapi('ping', 2, function(pingReturn) {
-                    call_ping(pingReturn, "ping api");
+                    show_tcfping_info(pingReturn, "ping api");
                 });
             }
 
@@ -212,13 +212,13 @@
                 // to generate error change tcdata -> tcData >> next documentation
                 if(success) {
                     __tcfapi('ping', 2, (pingReturn) => {
-                        call_ping(pingReturn, 'addEventListener('+tcdata.listenerId+')::ping callback');
+                        show_tcfping_info(pingReturn, 'addEventListener('+tcdata.listenerId+')::ping callback');
                     });
                     if (tcdata.eventStatus === 'useractioncomplete') {
-                        call_gettcdata(success, tcdata, 'addEventListener('+tcdata.listenerId+')::useractioncomplete::tcdata api');
+                        show_tcfgettcdata_info(success, tcdata, 'addEventListener('+tcdata.listenerId+')::useractioncomplete::tcdata api');
                         console.log('addEventListener('+tcdata.listenerId+')::eventStatus is useractioncomplete');
                     } else if (tcdata.eventStatus === 'tcloaded') {
-                        call_gettcdata(success, tcdata, 'addEventListener('+tcdata.listenerId+')::tcloaded::tcdata api');
+                        show_tcfgettcdata_info(success, tcdata, 'addEventListener('+tcdata.listenerId+')::tcloaded::tcdata api');
                         console.log('addEventListener('+tcdata.listenerId+')::eventStatus is tcloaded');
                     } else if (tcdata.eventStatus === 'cmpuishown') {
                         console.log('addEventListener('+tcdata.listenerId+')::eventStatus is cmpuishown');
@@ -227,7 +227,7 @@
             });
 
             __tcfapi('getTCData', 2, function(tcdata, success) {
-                call_gettcdata(success, tcdata, "getTCData api");
+                show_tcfgettcdata_info(success, tcdata, "getTCData api");
             });
 
             __tcfapi('getVendorPurposeMapping', 2, function(gvl, success) {
