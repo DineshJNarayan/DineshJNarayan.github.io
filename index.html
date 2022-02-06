@@ -99,7 +99,7 @@
             window._sp_ = {
                 config: {
                     accountId: 1732,
-                    //propertyHref: "https://dineshjnarayan.github.io/",
+                    propertyHref: "https://dineshjnarayan.github.io/",
                     baseEndpoint: 'https://cdn.privacy-mgmt.com',
                     gdpr: { },
                     events: {
@@ -182,14 +182,17 @@
                         console.log("addEventListener::ping callback")
                     });
                     if (tcdata.eventStatus === 'useractioncomplete') {
+                        document.getElementById("tcfapi_gettcdata_function").innerHTML = "addEventListener::useractioncomplete::tcdata";
                         document.getElementById("tcfapi_gettcdata_success").innerHTML = success;
                         document.getElementById("tcfapi_gettcdata").innerHTML = JSON.stringify(tcdata);
                         console.log('addEventListener::eventStatus is useractioncomplete');  
                         console.log('addEventListener::useractioncomplete::tcdata callback');
                     } else if (tcdata.eventStatus === 'tcloaded') {
+                        document.getElementById("tcfapi_gettcdata_function").innerHTML = "addEventListener::tcloaded::tcdata";
                         document.getElementById("tcfapi_gettcdata_success").innerHTML = success;
                         document.getElementById("tcfapi_gettcdata").innerHTML = JSON.stringify(tcdata);
                         console.log('addEventListener::eventStatus is tcloaded');
+                        console.log('addEventListener::tcloaded::tcdata callback');
                     } else if (tcdata.eventStatus === 'cmpuishown') {
                         console.log('addEventListener::eventStatus is cmpuishown');
                     }
@@ -473,6 +476,7 @@
         <h5 class="w3-center"></h5>
         <hr>
 
+
 <!-- Ping Output-->
 <h5 class="w3-center">__tcfapi callback - ping command</h5>
 <table class="d table-bordered table-hover">
@@ -494,6 +498,12 @@
 <table class="d table-bordered table-hover">
     <caption style="color: #FFFFFF; background-color: #E4E4E4;" class="table-bordered table-hover">The getTCData command allows your organization to retrieve unencoded and encoded values of the TC String. The TC String also provides additional information about the CMP event status, if GDPR applies to the end-user and more</caption>
     <tbody>
+        <tr>
+            <td style="width: 50%; background-color: #dae4eb;">
+                <code>addEventListener call</code>
+            </td>
+            <td id="tcfapi_gettcdata_function" style="width: 50%; align-content: center; background-color: #ECE9E7"></td>
+        </tr>
         <tr>
             <td style="width: 50%; background-color: #dae4eb;">
                 <code>success</code>
