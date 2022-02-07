@@ -98,20 +98,24 @@
             function output_to_table_dynamic(table_name, elementids, cell_values, cell_labels)   {
                 var table = document.getElementById(table_name);
                 for (let i = 0; i < elementids.length; i++) {
-                    var elementExists = document.getElementById(elementids[i]);
-                    if(elementExists === null)    {
-                        var row = table.insertRow(0);
-                        var cell_value = row.insertCell(0);
-                        cell_value.style = "width: 50%; align-content: center; background-color: #ECE9E7; word-wrap: break-word;";
-                        cell_value.id = elementids[i];
-                        var cell_label = row.insertCell(0);
-                        cell_label.style = "width: 50%; background-color: #dae4eb;";
-                        cell_label.id = elementids[i] + '_label';
-                        document.getElementById(elementids[i] + '_label').innerHTML = cell_labels[i];
+                    if(typeof cell_values[i]=='undefined')    {
+                        var row = document.getElementById(elementids[i] + '_row');
+                        if(row)    {    row.parentNode.removeChild(row);    }
+                    } else {
+                        var elementExists = document.getElementById(elementids[i]);
+                        if(elementExists === null)    {
+                            var row = table.insertRow(0);
+                            row.id = elementids[i] + '_row';
+                            var cell_data = row.insertCell(0);
+                            cell_data.style = "width: 50%; align-content: center; background-color: #ECE9E7; word-wrap: break-word;";
+                            cell_data.id = elementids[i];
+                            var cell_label = row.insertCell(0);
+                            cell_label.style = "width: 50%; background-color: #dae4eb;";
+                            cell_label.id = elementids[i] + '_label';
+                            document.getElementById(elementids[i] + '_label').innerHTML = cell_labels[i];
+                        }
+                        document.getElementById(elementids[i]).innerHTML = cell_values[i];
                     }
-                    cell_value = cell_values[i];
-                    if(typeof cell_values[i]=='undefined') cell_value = '';
-                    document.getElementById(elementids[i]).innerHTML = cell_value;
                 }
             }
         </script>
@@ -121,7 +125,7 @@
             window._sp_ = {
                 config: {
                     accountId: 1732,
-                    //propertyHref: "https://dineshjnarayan.github.io/",
+                    propertyHref: "https://dineshjnarayan.github.io/",
                     baseEndpoint: 'https://cdn.privacy-mgmt.com',
                     gdpr: { },
                     events: {
