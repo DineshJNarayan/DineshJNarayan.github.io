@@ -109,8 +109,6 @@
                         cell_label.id = elementids[i] + '_label';
                         document.getElementById(elementids[i] + '_label').innerHTML = cell_labels[i];
                     }
-                }
-                for (let i = 0; i < elementids.length; i++) {
                     cell_value = cell_values[i];
                     if(typeof cell_values[i]=='undefined') cell_value = '';
                     document.getElementById(elementids[i]).innerHTML = cell_value;
@@ -129,26 +127,23 @@
                     events: {
 
                         onMessageReady: function (message_type) {
-                            const elementids = ["onmessageready_message_type"];
                             const cell_values = [message_type];
-                            const cell_labels = ["message_type"];
-                            output_to_table_dynamic("onmessageready", elementids, cell_values, cell_labels);
+                            const cell_labels = ["onMessageReady message_type"];
+                            output_to_table_dynamic("onmessageready", cell_labels, cell_values, cell_labels);
                             console.log('onMessageReady callback ');
                         },
                         
                         onMessageChoiceSelect: function (message_type, choice_id, choice_type_id) {
-                            const elementids = ["onmessagechoiceselect_message_type", "onmessagechoiceselect_choice_id", "onmessagechoiceselect_choice_type_id"];
                             const cell_values = [message_type, choice_id, choice_type_id];
-                            const cell_labels = ["message_type", "choice_id", "choice_type_id"];
-                            output_to_table_dynamic("onmessagechoiceselect", elementids, cell_values, cell_labels);
+                            const cell_labels = ["onMessageChoiceSelect message_type", "choice_id", "choice_type_id"];
+                            output_to_table_dynamic("onmessagechoiceselect", cell_labels, cell_values, cell_labels);
                             console.log('onMessageChoiceSelect callback');
                         },
                     
                         onPrivacyManagerAction: function (message_type, pmData) {
-                            const elementids = ["onprivacymanageraction_message_type", "onprivacymanageraction_pmdata"];
                             const cell_values = [message_type, JSON.stringify(pmData)];
-                            const cell_labels = ["message_type", "pmData"];
-                            output_to_table_dynamic("onprivacymanageraction", elementids, cell_values, cell_labels);
+                            const cell_labels = ["onPrivacyManagerAction message_type", "pmData"];
+                            output_to_table_dynamic("onprivacymanageraction", cell_labels, cell_values, cell_labels);
                             console.log('onPrivacyManagerAction callback');
                         },
                     
@@ -158,35 +153,31 @@
                         },
 
                         onConsentReady: function (message_type, consentUUID, euconsent) {
-                            const elementids = ["onconsentready_message_type", "onconsentready_consentuuid", "onconsentready_euconsent"];
                             const cell_values = [message_type, consentUUID, euconsent];
-                            const cell_labels = ["message_type", "consentUUID", "euconsent"];
-                            output_to_table_dynamic("onconsentready", elementids, cell_values, cell_labels);
+                            const cell_labels = ["onConsentReady message_type", "consentUUID", "euconsent"];
+                            output_to_table_dynamic("onconsentready", cell_labels, cell_values, cell_labels);
                             console.log('onConsentReady callback');
                         },
                     
                         onPMCancel: function (message_type) {
-                            const elementids = ["onpmcancel_message_type"];
                             const cell_values = [message_type];
-                            const cell_labels = ["message_type"];
-                            output_to_table_dynamic("onpmcancel", elementids, cell_values, cell_labels);
+                            const cell_labels = ["onPMCancel message_type"];
+                            output_to_table_dynamic("onpmcancel", cell_labels, cell_values, cell_labels);
                             console.log('onPMCancel callback');
                         },
                     
                         onMessageReceiveData: function (message_type, data) {
                             //document.getElementById("onmessagereceivedata_data").innerHTML = JSON.stringify(data);
-                            const elementids = ["onmessagereceivedata_message_type", "onmessagereceivedata_data_prtnuuid", "onmessagereceivedata_data_messageid", "onmessagereceivedata_data_messagedescription", "onmessagereceivedata_data_bucket", "onmessagereceivedata_data_uuid", "onmessagereceivedata_data_categoryid", "onmessagereceivedata_data_subcategoryid"];
                             const cell_values = [message_type, data.prtnUUID, data.messageId, data.msgDescription, data.bucket, data.uuid, data.categoryId, data.subCategoryId];
-                            const cell_labels = ["message_type", "data:prtnUUID", "data:messageId", "data:msgDescription", "data:bucket", "data:uuid", "data:categoryId", "data:subCategoryId"];
-                            output_to_table_dynamic("onmessagereceivedata", elementids, cell_values, cell_labels);
+                            const cell_labels = ["onMessageReceiveData message_type", "data:prtnUUID", "data:messageId", "data:msgDescription", "data:bucket", "data:uuid", "data:categoryId", "data:subCategoryId"];
+                            output_to_table_dynamic("onmessagereceivedata", cell_labels, cell_values, cell_labels);
                             console.log('onMessageReceiveData callback');
                         },
                     
                         onSPPMObjectReady: function () {
-                            const elementids = ["onsppmobjectready"];
                             const cell_values = ["yes"];
                             const cell_labels = ["onsppmobjectready"];
-                            output_to_table_dynamic("onsppmobject_ready", elementids, cell_values, cell_labels);
+                            output_to_table_dynamic("onsppmobject_ready", cell_labels, cell_values, cell_labels);
                             console.log('onSPPMObjectReady callback');
                         },
 
@@ -210,20 +201,18 @@
             //table name checked
             function show_tcfping_info(pingReturn, message)    {
                 //document.getElementById("callping_tcfapi").innerHTML = JSON.stringify(pingReturn);
-                const elementids = ["callping_tcfapi_cmpid", "callping_tcfapi_cmpversion", "callping_tcfapi_gdprapplies", "callping_tcfapi_tcfpolicyversion", "callping_tcfapi_cmploaded", "callping_tcfapi_cmpstatus", "callping_tcfapi_displaystatus", "callping_tcfapi_apiversion"];
                 const cell_values = [pingReturn.cmpId, pingReturn.cmpVersion, pingReturn.gdprApplies, pingReturn.tcfPolicyVersion, pingReturn.cmpLoaded, pingReturn.cmpStatus, pingReturn.displayStatus, pingReturn.apiVersion];
-                const cell_labels = ["pingReturn:cmpId", "pingReturn:cmpVersion", "pingReturn:gdprApplies", "pingReturn:tcfPolicyVersion", "pingReturn:cmpLoaded", "pingReturn:cmpStatus", "pingReturn:displayStatus", "pingReturn:apiVersion"];
-                output_to_table_dynamic("callping", elementids, cell_values, cell_labels);
+                const cell_labels = ["cmpId", "cmpVersion", "gdprApplies", "tcfPolicyVersion", "cmpLoaded", "cmpStatus", "displayStatus", "apiVersion"];
+                output_to_table_dynamic("callping", cell_labels, cell_values, cell_labels);
                 console.log(message);
             }
 
             //table name checked
             function show_tcfgettcdata_info(success, tcdata, message)   {
                 //document.getElementById("tcfapi_gettcdata").innerHTML = JSON.stringify(tcdata);
-                const elementids = ["tcfapi_gettcdata_success", "tcfapi_gettcdata_additional", "tcfapi_gettcdata_cmpid", "tcfapi_gettcdata_cmpstatus", "tcfapi_gettcdata_cmpversion", "tcfapi_gettcdata_eventStatus", "tcfapi_gettcdata_gdprapplies", "tcfapi_gettcdata_isservicespecific", "tcfapi_gettcdata_listenerid", "tcfapi_gettcdata_publishercc", "tcfapi_gettcdata_purposeonetreatment", "tcfapi_gettcdata_tcstring", "tcfapi_gettcdata_tcfpolicyversion", "tcfapi_gettcdata_usenonstandardstacks", "tcfapi_gettcdata_publisher_consents", "tcfapi_gettcdata_publisher_custompurpose", "tcfapi_gettcdata_publisher_legitimateinterests", "tcfapi_gettcdata_publisher_restrictions", "tcfapi_gettcdata_purpose_consents", "tcfapi_gettcdata_purpose_legitimateinterests", "tcfapi_gettcdata_vendor_consents", "tcfapi_gettcdata_vendor_legitimateinterests"];
                 const cell_values = [success, tcdata.addtlConsent, tcdata.cmpId, tcdata.cmpStatus, tcdata.cmpVersion, tcdata.eventStatus, tcdata.gdprApplies, tcdata.isServiceSpecific, tcdata.listenerId, tcdata.publisherCC, tcdata.purposeOneTreatment, tcdata.tcString, tcdata.tcfPolicyVersion, tcdata.useNonStandardStacks, JSON.stringify(tcdata.publisher.consents), JSON.stringify(tcdata.publisher.customPurpose), JSON.stringify(tcdata.publisher.legitimateInterests), JSON.stringify(tcdata.publisher.restrictions), JSON.stringify(tcdata.purpose.consents), JSON.stringify(tcdata.purpose.legitimateInterests), JSON.stringify(tcdata.vendor.consents), JSON.stringify(tcdata.vendor.legitimateInterests)];
-                const cell_labels = ["success", "tcdata:addtlConsent", "tcdata:cmpId", "tcdata:cmpStatus", "tcdata:cmpVersion", "tcdata:eventStatus", "tcdata:gdprApplies", "tcdata:isServiceSpecific", "tcdata:listenerId", "tcdata:publisherCC", "tcdata:purposeOneTreatment", "tcdata.tcString:", "tcdata:tcfPolicyVersion", "tcdata:useNonStandardStacks", "tcdata:publisher:consents", "tcdata:publisher:customPurpose", "tcdata:publisher:legitimateInterests", "tcdata:publisher:restrictions", "tcdata:purpose:consents", "tcdata:purpose:legitimateInterests", "tcdata:vendor:consents", "tcdata:vendor:legitimateInterests"];
-                output_to_table_dynamic("tcfapi_gettcdata", elementids, cell_values, cell_labels);
+                const cell_labels = ["success", "addtlConsent", "cmpId", "cmpStatus", "cmpVersion", "eventStatus", "gdprApplies", "isServiceSpecific", "istenerId", "publisherCC", "purposeOneTreatment", "tcString:", "tcfPolicyVersion", "useNonStandardStacks", "publisher:consents", "publisher:customPurpose", "publisher:legitimateInterests", "publisher:restrictions", "purpose:consents", "purpose:legitimateInterests", "vendor:consents", "vendor:legitimateInterests"];
+                output_to_table_dynamic("tcfapi_gettcdata", cell_labels, cell_values, cell_labels);
                 console.log(message);
             }
 
@@ -254,10 +243,9 @@
             });
 
             __tcfapi('getVendorPurposeMapping', 2, function(gvl, success) {
-                const elementids = ["getvendorpurposemapping_success", "getvendorpurposemapping"];
                 const cell_values = [success, JSON.stringify(gvl)];
-                const cell_labels = ["success", "gvl"];
-                output_to_table_dynamic("getvendorpurposemapping_table", elementids, cell_values, cell_labels);
+                const cell_labels = ["getVendorPurposeMapping success", "gvl"];
+                output_to_table_dynamic("getvendorpurposemapping_table", cell_labels, cell_values, cell_labels);
                 console.log("getVendorPurposeMapping api")
             });
 
