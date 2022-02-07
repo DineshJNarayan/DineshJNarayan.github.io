@@ -95,13 +95,21 @@
         </script>
 
         <script>
-            function output_to_table(elementids, cell_values)   {
-                //var table = document.getElementById(table_name);
-                //for (let i = 0; i < elementids.length; i++) {
-                //    var row = table.insertRow(0);
-                //    var cell = row.insertCell(0);
-                //    cell.id = elementids[i];
-                //}
+            function output_to_table_dynamic(table_name, elementids, cell_values, cell_labels)   {
+                var table = document.getElementById(table_name);
+                for (let i = 0; i < elementids.length; i++) {
+                    var elementExists = document.getElementById(elementids[i]);
+                    if(elementExists === null)    {
+                        var row = table.insertRow(0);
+                        var cell_value = row.insertCell(0);
+                        cell_value.style = "width: 50%; align-content: center; background-color: #ECE9E7; word-wrap: break-word;";
+                        cell_value.id = elementids[i];
+                        var cell_label = row.insertCell(0);
+                        cell_label.style = "width: 50%; background-color: #dae4eb;";
+                        cell_label.id = elementids[i] + '_label';
+                        document.getElementById(elementids[i] + '_label').innerHTML = cell_labels[i];
+                    }
+                }
                 for (let i = 0; i < elementids.length; i++) {
                     cell_value = cell_values[i];
                     if(typeof cell_values[i]=='undefined') cell_value = '';
@@ -115,27 +123,32 @@
             window._sp_ = {
                 config: {
                     accountId: 1732,
-                    propertyHref: "https://dineshjnarayan.github.io/",
+                    //propertyHref: "https://dineshjnarayan.github.io/",
                     baseEndpoint: 'https://cdn.privacy-mgmt.com',
                     gdpr: { },
                     events: {
 
                         onMessageReady: function (message_type) {
-                            document.getElementById("onmessageready_message_type").innerHTML = message_type;
+                            const elementids = ["onmessageready_message_type"];
+                            const cell_values = [message_type];
+                            const cell_labels = ["message_type"];
+                            output_to_table_dynamic("onmessageready", elementids, cell_values, cell_labels);
                             console.log('onMessageReady callback ');
                         },
-                    
+                        
                         onMessageChoiceSelect: function (message_type, choice_id, choice_type_id) {
                             const elementids = ["onmessagechoiceselect_message_type", "onmessagechoiceselect_choice_id", "onmessagechoiceselect_choice_type_id"];
                             const cell_values = [message_type, choice_id, choice_type_id];
-                            output_to_table(elementids, cell_values);
+                            const cell_labels = ["message_type", "choice_id", "choice_type_id"];
+                            output_to_table_dynamic("onmessagechoiceselect", elementids, cell_values, cell_labels);
                             console.log('onMessageChoiceSelect callback');
                         },
                     
                         onPrivacyManagerAction: function (message_type, pmData) {
                             const elementids = ["onprivacymanageraction_message_type", "onprivacymanageraction_pmdata"];
                             const cell_values = [message_type, JSON.stringify(pmData)];
-                            output_to_table(elementids, cell_values);
+                            const cell_labels = ["message_type", "pmData"];
+                            output_to_table_dynamic("onprivacymanageraction", elementids, cell_values, cell_labels);
                             console.log('onPrivacyManagerAction callback');
                         },
                     
@@ -147,12 +160,16 @@
                         onConsentReady: function (message_type, consentUUID, euconsent) {
                             const elementids = ["onconsentready_message_type", "onconsentready_consentuuid", "onconsentready_euconsent"];
                             const cell_values = [message_type, consentUUID, euconsent];
-                            output_to_table(elementids, cell_values);
+                            const cell_labels = ["message_type", "consentUUID", "euconsent"];
+                            output_to_table_dynamic("onconsentready", elementids, cell_values, cell_labels);
                             console.log('onConsentReady callback');
                         },
                     
                         onPMCancel: function (message_type) {
-                            document.getElementById("onpmcancel_message_type").innerHTML = message_type;
+                            const elementids = ["onpmcancel_message_type"];
+                            const cell_values = [message_type];
+                            const cell_labels = ["message_type"];
+                            output_to_table_dynamic("onpmcancel", elementids, cell_values, cell_labels);
                             console.log('onPMCancel callback');
                         },
                     
@@ -160,12 +177,16 @@
                             //document.getElementById("onmessagereceivedata_data").innerHTML = JSON.stringify(data);
                             const elementids = ["onmessagereceivedata_message_type", "onmessagereceivedata_data_prtnuuid", "onmessagereceivedata_data_messageid", "onmessagereceivedata_data_messagedescription", "onmessagereceivedata_data_bucket", "onmessagereceivedata_data_uuid", "onmessagereceivedata_data_categoryid", "onmessagereceivedata_data_subcategoryid"];
                             const cell_values = [message_type, data.prtnUUID, data.messageId, data.msgDescription, data.bucket, data.uuid, data.categoryId, data.subCategoryId];
-                            output_to_table(elementids, cell_values);
+                            const cell_labels = ["message_type", "data:prtnUUID", "data:messageId", "data:msgDescription", "data:bucket", "data:uuid", "data:categoryId", "data:subCategoryId"];
+                            output_to_table_dynamic("onmessagereceivedata", elementids, cell_values, cell_labels);
                             console.log('onMessageReceiveData callback');
                         },
                     
                         onSPPMObjectReady: function () {
-                            document.getElementById("onsppmobjectready").innerHTML = "yes";
+                            const elementids = ["onsppmobjectready"];
+                            const cell_values = ["yes"];
+                            const cell_labels = ["onsppmobjectready"];
+                            output_to_table_dynamic("onsppmobject_ready", elementids, cell_values, cell_labels);
                             console.log('onSPPMObjectReady callback');
                         },
 
@@ -186,19 +207,23 @@
 
             }
 
+            //table name checked
             function show_tcfping_info(pingReturn, message)    {
                 //document.getElementById("callping_tcfapi").innerHTML = JSON.stringify(pingReturn);
                 const elementids = ["callping_tcfapi_cmpid", "callping_tcfapi_cmpversion", "callping_tcfapi_gdprapplies", "callping_tcfapi_tcfpolicyversion", "callping_tcfapi_cmploaded", "callping_tcfapi_cmpstatus", "callping_tcfapi_displaystatus", "callping_tcfapi_apiversion"];
                 const cell_values = [pingReturn.cmpId, pingReturn.cmpVersion, pingReturn.gdprApplies, pingReturn.tcfPolicyVersion, pingReturn.cmpLoaded, pingReturn.cmpStatus, pingReturn.displayStatus, pingReturn.apiVersion];
-                output_to_table(elementids, cell_values);
+                const cell_labels = ["pingReturn:cmpId", "pingReturn:cmpVersion", "pingReturn:gdprApplies", "pingReturn:tcfPolicyVersion", "pingReturn:cmpLoaded", "pingReturn:cmpStatus", "pingReturn:displayStatus", "pingReturn:apiVersion"];
+                output_to_table_dynamic("callping", elementids, cell_values, cell_labels);
                 console.log(message);
             }
 
+            //table name checked
             function show_tcfgettcdata_info(success, tcdata, message)   {
                 //document.getElementById("tcfapi_gettcdata").innerHTML = JSON.stringify(tcdata);
                 const elementids = ["tcfapi_gettcdata_success", "tcfapi_gettcdata_additional", "tcfapi_gettcdata_cmpid", "tcfapi_gettcdata_cmpstatus", "tcfapi_gettcdata_cmpversion", "tcfapi_gettcdata_eventStatus", "tcfapi_gettcdata_gdprapplies", "tcfapi_gettcdata_isservicespecific", "tcfapi_gettcdata_listenerid", "tcfapi_gettcdata_publishercc", "tcfapi_gettcdata_purposeonetreatment", "tcfapi_gettcdata_tcstring", "tcfapi_gettcdata_tcfpolicyversion", "tcfapi_gettcdata_usenonstandardstacks", "tcfapi_gettcdata_publisher_consents", "tcfapi_gettcdata_publisher_custompurpose", "tcfapi_gettcdata_publisher_legitimateinterests", "tcfapi_gettcdata_publisher_restrictions", "tcfapi_gettcdata_purpose_consents", "tcfapi_gettcdata_purpose_legitimateinterests", "tcfapi_gettcdata_vendor_consents", "tcfapi_gettcdata_vendor_legitimateinterests"];
                 const cell_values = [success, tcdata.addtlConsent, tcdata.cmpId, tcdata.cmpStatus, tcdata.cmpVersion, tcdata.eventStatus, tcdata.gdprApplies, tcdata.isServiceSpecific, tcdata.listenerId, tcdata.publisherCC, tcdata.purposeOneTreatment, tcdata.tcString, tcdata.tcfPolicyVersion, tcdata.useNonStandardStacks, JSON.stringify(tcdata.publisher.consents), JSON.stringify(tcdata.publisher.customPurpose), JSON.stringify(tcdata.publisher.legitimateInterests), JSON.stringify(tcdata.publisher.restrictions), JSON.stringify(tcdata.purpose.consents), JSON.stringify(tcdata.purpose.legitimateInterests), JSON.stringify(tcdata.vendor.consents), JSON.stringify(tcdata.vendor.legitimateInterests)];
-                output_to_table(elementids, cell_values);
+                const cell_labels = ["success", "tcdata:addtlConsent", "tcdata:cmpId", "tcdata:cmpStatus", "tcdata:cmpVersion", "tcdata:eventStatus", "tcdata:gdprApplies", "tcdata:isServiceSpecific", "tcdata:listenerId", "tcdata:publisherCC", "tcdata:purposeOneTreatment", "tcdata.tcString:", "tcdata:tcfPolicyVersion", "tcdata:useNonStandardStacks", "tcdata:publisher:consents", "tcdata:publisher:customPurpose", "tcdata:publisher:legitimateInterests", "tcdata:publisher:restrictions", "tcdata:purpose:consents", "tcdata:purpose:legitimateInterests", "tcdata:vendor:consents", "tcdata:vendor:legitimateInterests"];
+                output_to_table_dynamic("tcfapi_gettcdata", elementids, cell_values, cell_labels);
                 console.log(message);
             }
 
@@ -216,10 +241,8 @@
                     });
                     if (tcdata.eventStatus === 'useractioncomplete') {
                         show_tcfgettcdata_info(success, tcdata, 'addEventListener('+tcdata.listenerId+')::useractioncomplete::tcdata api');
-                        console.log('addEventListener('+tcdata.listenerId+')::eventStatus is useractioncomplete');
                     } else if (tcdata.eventStatus === 'tcloaded') {
                         show_tcfgettcdata_info(success, tcdata, 'addEventListener('+tcdata.listenerId+')::tcloaded::tcdata api');
-                        console.log('addEventListener('+tcdata.listenerId+')::eventStatus is tcloaded');
                     } else if (tcdata.eventStatus === 'cmpuishown') {
                         console.log('addEventListener('+tcdata.listenerId+')::eventStatus is cmpuishown');
                     }
@@ -231,8 +254,10 @@
             });
 
             __tcfapi('getVendorPurposeMapping', 2, function(gvl, success) {
-                document.getElementById("tcfapi_getvendorpurposemapping_success").innerHTML = success;
-                document.getElementById("tcfapi_getvendorpurposemapping").innerHTML = JSON.stringify(gvl);
+                const elementids = ["getvendorpurposemapping_success", "getvendorpurposemapping"];
+                const cell_values = [success, JSON.stringify(gvl)];
+                const cell_labels = ["success", "gvl"];
+                output_to_table_dynamic("getvendorpurposemapping_table", elementids, cell_values, cell_labels);
                 console.log("getVendorPurposeMapping api")
             });
 
@@ -315,182 +340,39 @@
         <!-- Container (About Section) -->
         <div class="w3-content w3-container w3-padding-64" id="about">
             <!-- onMessageReady Output-->
-            <table class="d table-bordered" id="onMessageReady">
-                <caption style="color: #FFFFFF; background-color: #E4E4E4;"><strong>onMessageReady</strong> fires when a message is about to display. This callback returns the message_type</caption>
-                <tbody>
-                    <tr>
-                        <td style="width: 50%; background-color: #dae4eb;">
-                            <code>message_type</code>
-                        </td>
-                        <td id="onmessageready_message_type" style="width: 50%; align-content: center; background-color: #ECE9E7"></td>
-                    </tr>
-                </tbody>
+            <table class="d table-bordered" id="onmessageready">
+                <caption style="color: #FFFFFF; background-color: #E4E4E4;"><strong>onMessageReady</strong></caption>
             </table>
-            <!-- onMessageReady Output -->
             <hr>
             <!-- onMessageChoiceSelect Output -->
-            <table class="d table-bordered" id="onMessageChoiceSelect">
-                <caption style="color: #FFFFFF; background-color: #E4E4E4;"><strong>onMessageChoiceSelect</strong> fires when the consent object is ready and returns three values</caption>
-                <tbody>
-                    <tr>
-                        <td style="width: 50%; background-color: #dae4eb;">
-                            <code>message_type</code>
-                        </td>
-                        <td id="onmessagechoiceselect_message_type" style="width: 50%; align-content: center; background-color: #ECE9E7""></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 50%; background-color: #dae4eb;">
-                            <code>choice_id</code>
-                        </td>
-                        <td id="onmessagechoiceselect_choice_id" style="width: 50%; align-content: center; background-color: #ECE9E7""></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 50%; background-color: #dae4eb;">
-                            <code>choice_type_id</code>
-                        </td>
-                        <td id="onmessagechoiceselect_choice_type_id" style="width: 50%; align-content: center; background-color: #ECE9E7""></td>
-                    </tr>
-                </tbody>
+            <table class="d table-bordered" id="onmessagechoiceselect">
+                <caption style="color: #FFFFFF; background-color: #E4E4E4;"><strong>onMessageChoiceSelect</strong></caption>
             </table>
-            <!-- onMessageChoiceSelect Output -->
             <hr>
             <!-- onSPPMObjectReady Output -->
-            <table class="d table-bordered" id="onSPPMObjectReady">
-                <caption style="color: #FFFFFF; background-color: #E4E4E4;"><strong>onSPPMObjectReady</strong> fires when the privacy manager is ready to be displayed on the page</caption>
-                <tbody>
-                    <tr>
-                        <td style="width: 50%; background-color: #dae4eb;">
-                            <code>onSPPMObjectReady</code>
-                        </td>
-                        <td id="onsppmobjectready" style="width: 50%; align-content: center; background-color: #ECE9E7"">no</td>
-                    </tr>
-                </tbody>
+            <table class="d table-bordered" id="onsppmobject_ready">
+                <caption style="color: #FFFFFF; background-color: #E4E4E4;"><strong>onSPPMObjectReady</strong></caption>
             </table>
-            <!-- onSPPMObjectReady Output -->
             <hr>
             <!-- onPrivacyManagerAction Output -->
-            <table class="d table-bordered" id="onPrivacyManagerAction">
-                <caption style="color: #FFFFFF; background-color: #E4E4E4;"><strong>onPrivacyManagerAction</strong> fires when a button in a privacy manager has been clicked. This callback returns two values</caption>
-                <tbody>
-                    <tr>
-                        <td style="width: 50%; background-color: #dae4eb;">
-                            <code>message_type</code>
-                        </td>
-                        <td id="onprivacymanageraction_message_type" style="width: 50%; align-content: center; background-color: #ECE9E7""></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 50%; background-color: #dae4eb;">
-                            <code>pmData</code>
-                        </td>
-                        <td id="onprivacymanageraction_pmdata" style="width: 50%; align-content: center; background-color: #ECE9E7""></td>
-                    </tr>
-                </tbody>
+            <table class="d table-bordered" id="onprivacymanageraction">
+                <caption style="color: #FFFFFF; background-color: #E4E4E4;"><strong>onPrivacyManagerAction</strong></caption>
             </table>
-            <!-- onPrivacyManagerAction Output -->
             <hr>
             <!-- onConsentReady Output -->
-            <table class="d table-bordered" id="onConsentReady">
-                <caption style="color: #FFFFFF; background-color: #E4E4E4;"><strong>onConsentReady</strong> fires when the consent object is ready and returns three values</caption>
-                <tbody>
-                    <tr>
-                        <td style="width: 50%; background-color: #dae4eb;">
-                            <code>message_type</code>
-                        </td>
-                        <td id="onconsentready_message_type" style="width: 50%; align-content: center; background-color: #ECE9E7""></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 50%; background-color: #dae4eb;">
-                            <code>consentuuid</code>
-                        </td>
-                        <td id="onconsentready_consentuuid" style="width: 50%; align-content: center; background-color: #ECE9E7""></td>
-                    </tr>
-                    <tr>
-                        <td style="background-color: #dae4eb;">
-                            <code>euconsent</code>
-                        </td>
-                        <td id="onconsentready_euconsent" style="align-content: left; background-color: #ECE9E7""></td>
-                    </tr>
-                </tbody>
+            <table class="d table-bordered" id="onconsentready">
+                <caption style="color: #FFFFFF; background-color: #E4E4E4;"><strong>onConsentReady</strong></caption>
             </table>
-            <!-- onConsentReady Output -->
             <hr>
             <!-- onMessageReceiveData Output -->
-            <table class="d table-bordered" id="onMessageReceiveData">
-                <caption style="color: #FFFFFF; background-color: #E4E4E4;"><strong>onMessageReceiveData</strong> fires when a message is displayed to the user and sends data about the message and campaign to the callback</caption>
-                <tbody>
-                    <tr>
-                        <td style="width: 50%; background-color: #dae4eb;">
-                            <code>message_type</code>
-                        </td>
-                        <td id="onmessagereceivedata_message_type" style="width: 50%; align-content: center; background-color: #ECE9E7""></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 50%; background-color: #dae4eb;">
-                            <code>data:prtnUUID</code>
-                        </td>
-                        <td id="onmessagereceivedata_data_prtnuuid" style="width: 50%; align-content: center; background-color: #ECE9E7""></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 50%; background-color: #dae4eb;">
-                            <code>data:messageId</code>
-                        </td>
-                        <td id="onmessagereceivedata_data_messageid" style="width: 50%; align-content: center; background-color: #ECE9E7""></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 50%; background-color: #dae4eb;">
-                            <code>data:msgDescription</code>
-                        </td>
-                        <td id="onmessagereceivedata_data_messagedescription" style="width: 50%; align-content: center; background-color: #ECE9E7""></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 50%; background-color: #dae4eb;">
-                            <code>data:bucket</code>
-                        </td>
-                        <td id="onmessagereceivedata_data_bucket" style="width: 50%; align-content: center; background-color: #ECE9E7""></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 50%; background-color: #dae4eb;">
-                            <code>data:uuid</code>
-                        </td>
-                        <td id="onmessagereceivedata_data_uuid" style="width: 50%; align-content: center; background-color: #ECE9E7""></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 50%; background-color: #dae4eb;">
-                            <code>data:categoryId</code>
-                        </td>
-                        <td id="onmessagereceivedata_data_categoryid" style="width: 50%; align-content: center; background-color: #ECE9E7""></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 50%; background-color: #dae4eb;">
-                            <code>data:subCategoryId</code>
-                        </td>
-                        <td id="onmessagereceivedata_data_subcategoryid" style="width: 50%; align-content: center; background-color: #ECE9E7""></td>
-                    </tr>
-                    <!--
-                    <tr>
-                        <td style="width: 50%; background-color: #dae4eb;">
-                            <code>data</code> (JSON)
-                        </td>
-                        <td id="onmessagereceivedata_data" style="width: 50%; align-content: center; background-color: #ECE9E7""></td>
-                    </tr>
-                    -->
-                </tbody>
+            <table class="d table-bordered" id="onmessagereceivedata">
+                <caption style="color: #FFFFFF; background-color: #E4E4E4;"><strong>onMessageReceiveData</strong></caption>
             </table>
-            <!-- onMessageReceiveData Output -->
             <hr>
             <!-- onPMCancel Output -->
-            <table class="d table-bordered" id="onPMCancel">
-                <caption style="color: #FFFFFF; background-color: #E4E4E4;"><strong>onPMCancel</strong> callback fires when a user clicks the privacy manager's cancel button. This callback returns the message_type</caption>
-                <tbody>
-                    <tr>
-                        <td style="width: 50%; background-color: #dae4eb;">
-                            <code>message_type</code>
-                        </td>
-                        <td id="onpmcancel_message_type" style="width: 50%; align-content: center; background-color: #ECE9E7""></td>
-                    </tr>
-                </tbody>
+            <table class="d table-bordered" id="onpmcancel">
+                <caption style="color: #FFFFFF; background-color: #E4E4E4;"><strong>onPMCancel</strong></caption>
             </table>
-            <!-- onPMCancel Output -->
             <hr>
             <div class="w3-row">
                 <div class="w3-col m6 w3-center w3-padding-large">
@@ -522,237 +404,20 @@
             <h5></h5>
             <hr>
             <!-- Ping Output-->
-            <table class="d table-bordered" id="Ping">
-                <caption style="color: #FFFFFF; background-color: #E4E4E4;"><strong>ping</strong> command informs whether or not the main CMP script has loaded and if GDPR applies. This command should be implemented and called before any other command</caption>
-                <tbody>
-                    <tr>
-                        <td style="width: 50%; background-color: #dae4eb;">
-                            <code>ping cmpId</code>
-                        </td>
-                        <td id="callping_tcfapi_cmpid" style="width: 50%; align-content: center; background-color: #ECE9E7"></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 50%; background-color: #dae4eb;">
-                            <code>ping cmpVersion</code>
-                        </td>
-                        <td id="callping_tcfapi_cmpversion" style="width: 50%; align-content: center; background-color: #ECE9E7"></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 50%; background-color: #dae4eb;">
-                            <code>ping gdprApplies</code>
-                        </td>
-                        <td id="callping_tcfapi_gdprapplies" style="width: 50%; align-content: center; background-color: #ECE9E7"></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 50%; background-color: #dae4eb;">
-                            <code>ping tcfPolicyVersion</code>
-                        </td>
-                        <td id="callping_tcfapi_tcfpolicyversion" style="width: 50%; align-content: center; background-color: #ECE9E7"></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 50%; background-color: #dae4eb;">
-                            <code>ping cmpLoaded</code>
-                        </td>
-                        <td id="callping_tcfapi_cmploaded" style="width: 50%; align-content: center; background-color: #ECE9E7"></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 50%; background-color: #dae4eb;">
-                            <code>ping cmpStatus</code>
-                        </td>
-                        <td id="callping_tcfapi_cmpstatus" style="width: 50%; align-content: center; background-color: #ECE9E7"></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 50%; background-color: #dae4eb;">
-                            <code>ping displayStatus</code>
-                        </td>
-                        <td id="callping_tcfapi_displaystatus" style="width: 50%; align-content: center; background-color: #ECE9E7"></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 50%; background-color: #dae4eb;">
-                            <code>ping apiVersion</code>
-                        </td>
-                        <td id="callping_tcfapi_apiversion" style="width: 50%; align-content: center; background-color: #ECE9E7"></td>
-                    </tr>
-                    <!--
-                    <tr>
-                        <td style="width: 50%; background-color: #dae4eb;">
-                            <code>ping</code>
-                        </td>
-                        <td id="callping_tcfapi" style="width: 50%; align-content: center; background-color: #ECE9E7"></td>
-                    </tr>
-                    -->
-                </tbody>
+            <table class="d table-bordered" id="callping">
+                <caption style="color: #FFFFFF; background-color: #E4E4E4;"><strong>ping</strong></caption>
             </table>
-            <!-- Ping Output -->
             <hr>
             <!-- getTCData Output-->
-            <table class="d table-bordered" id="getTCData">
-                <caption style="color: #FFFFFF; background-color: #E4E4E4;"><strong>getTCData</strong> command allows your organization to retrieve unencoded and encoded values of the TC String. The TC String also provides additional information about the CMP event status, if GDPR applies to the end-user and more</caption>
-                <tbody>
-                    <tr>
-                        <td style="width: 50%; background-color: #dae4eb;">
-                            <code>tcData success</code>
-                        </td>
-                        <td id="tcfapi_gettcdata_success" style="width: 50%; align-content: center; background-color: #ECE9E7"></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 50%; background-color: #dae4eb;">
-                            <code>tcData Google consent</code>
-                        </td>
-                        <td id="tcfapi_gettcdata_additional" style="width: 50%; align-content: center; background-color: #ECE9E7"></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 50%; background-color: #dae4eb;">
-                            <code>tcData cmpId</code>
-                        </td>
-                        <td id="tcfapi_gettcdata_cmpid" style="width: 50%; align-content: center; background-color: #ECE9E7"></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 50%; background-color: #dae4eb;">
-                            <code>tcData cmpStatus</code>
-                        </td>
-                        <td id="tcfapi_gettcdata_cmpstatus" style="width: 50%; align-content: center; background-color: #ECE9E7"></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 50%; background-color: #dae4eb;">
-                            <code>tcData cmpVersion</code>
-                        </td>
-                        <td id="tcfapi_gettcdata_cmpversion" style="width: 50%; align-content: center; background-color: #ECE9E7"></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 50%; background-color: #dae4eb;">
-                            <code>tcData eventStatus</code>
-                        </td>
-                        <td id="tcfapi_gettcdata_eventStatus" style="width: 50%; align-content: center; background-color: #ECE9E7"></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 50%; background-color: #dae4eb;">
-                            <code>tcData gdprApplies</code>
-                        </td>
-                        <td id="tcfapi_gettcdata_gdprapplies" style="width: 50%; align-content: center; background-color: #ECE9E7"></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 50%; background-color: #dae4eb;">
-                            <code>tcData isServiceSpecific</code>
-                        </td>
-                        <td id="tcfapi_gettcdata_isservicespecific" style="width: 50%; align-content: center; background-color: #ECE9E7"></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 50%; background-color: #dae4eb;">
-                            <code>tcData listenerId</code>
-                        </td>
-                        <td id="tcfapi_gettcdata_listenerid" style="width: 50%; align-content: center; background-color: #ECE9E7"></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 50%; background-color: #dae4eb;">
-                            <code>tcData publisherCC</code>
-                        </td>
-                        <td id="tcfapi_gettcdata_publishercc" style="width: 50%; align-content: center; background-color: #ECE9E7"></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 50%; background-color: #dae4eb;">
-                            <code>tcData purposeOneTreatment</code>
-                        </td>
-                        <td id="tcfapi_gettcdata_purposeonetreatment" style="width: 50%; align-content: center; background-color: #ECE9E7"></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 50%; background-color: #dae4eb;">
-                            <code>tcData tcString</code>
-                        </td>
-                        <td id="tcfapi_gettcdata_tcstring" style="width: 50%; align-content: center; background-color: #ECE9E7"></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 50%; background-color: #dae4eb;">
-                            <code>tcData tcfPolicyVersion</code>
-                        </td>
-                        <td id="tcfapi_gettcdata_tcfpolicyversion" style="width: 50%; align-content: center; background-color: #ECE9E7"></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 50%; background-color: #dae4eb;">
-                            <code>tcData useNonStandardStacks</code>
-                        </td>
-                        <td id="tcfapi_gettcdata_usenonstandardstacks" style="width: 50%; align-content: center; background-color: #ECE9E7"></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 50%; background-color: #dae4eb;">
-                            <code>tcData publisher:consents</code>
-                        </td>
-                        <td id="tcfapi_gettcdata_publisher_consents" style="width: 50%; align-content: center; background-color: #ECE9E7"></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 50%; background-color: #dae4eb;">
-                            <code>tcData publisher:customPurpose</code>
-                        </td>
-                        <td id="tcfapi_gettcdata_publisher_custompurpose" style="width: 50%; align-content: center; background-color: #ECE9E7"></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 50%; background-color: #dae4eb;">
-                            <code>tcData publisher:legitimateInterest</code>
-                        </td>
-                        <td id="tcfapi_gettcdata_publisher_legitimateinterests" style="width: 50%; align-content: center; background-color: #ECE9E7"></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 50%; background-color: #dae4eb;">
-                            <code>tcData publisher:restrictions</code>
-                        </td>
-                        <td id="tcfapi_gettcdata_publisher_restrictions" style="width: 50%; align-content: center; background-color: #ECE9E7"></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 50%; background-color: #dae4eb;">
-                            <code>tcData purpose:consents</code>
-                        </td>
-                        <td id="tcfapi_gettcdata_purpose_consents" style="width: 50%; align-content: center; background-color: #ECE9E7"></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 50%; background-color: #dae4eb;">
-                            <code>tcData purpose:legitimateInterest</code>
-                        </td>
-                        <td id="tcfapi_gettcdata_purpose_legitimateinterests" style="width: 50%; align-content: center; background-color: #ECE9E7"></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 50%; background-color: #dae4eb;">
-                            <code>tcData vendor:consents</code>
-                        </td>
-                        <td id="tcfapi_gettcdata_vendor_consents" style="width: 50%; align-content: center; background-color: #ECE9E7"></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 50%; background-color: #dae4eb;">
-                            <code>tcData vendor:legitimateInterest</code>
-                        </td>
-                        <td id="tcfapi_gettcdata_vendor_legitimateinterests" style="width: 50%; align-content: center; background-color: #ECE9E7"></td>
-                    </tr>
-                    <!--
-                    <tr>
-                        <td style="width: 50%; background-color: #dae4eb;">
-                            <code>tcdata</code>
-                        </td>
-                        <td id="tcfapi_gettcdata" style="width: 50%; align-content: center; background-color: #ECE9E7"></td>
-                    </tr>
-                    -->
-                </tbody>
+            <table class="d table-bordered" id="tcfapi_gettcdata">
+                <caption style="color: #FFFFFF; background-color: #E4E4E4;"><strong>getTCData</strong></caption>
             </table>
-            <!-- getTCData Output -->
             <hr>
             <!-- getVendorPurposeMapping Output-->
-            <table class="d table-bordered" id="getVendorPurposeMapping">
-                <caption style="color: #FFFFFF; background-color: #E4E4E4;"><strong>getVendorPurposeMapping</strong> command returns a JSON object that contains information on the purposes and corresponding legal basis attributed to each vendor and their legal basis</caption>
-                <tbody>
-                    <tr>
-                        <td style="width: 50%; background-color: #dae4eb;">
-                            <code>success</code>
-                        </td>
-                        <td id="tcfapi_getvendorpurposemapping_success" style="width: 50%; align-content: center; background-color: #ECE9E7"></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 50%; background-color: #dae4eb;">
-                            <code>gvl</code>
-                        </td>
-                        <td id="tcfapi_getvendorpurposemapping" style="width: 50%; align-content: center; background-color: #ECE9E7"></td>
-                    </tr>
-                </tbody>
+            <table class="d table-bordered" id="getvendorpurposemapping_table">
+                <caption style="color: #FFFFFF; background-color: #E4E4E4;"><strong>getVendorPurposeMapping</strong></caption>
             </table>
             <h5></h5>
-            <!--getVendorPurposeMapping Output-->
         </div>
         
         <div class="w3-row w3-center w3-dark-grey w3-padding-16">
