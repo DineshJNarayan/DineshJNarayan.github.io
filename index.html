@@ -95,6 +95,23 @@
         </script>
 
         <script>
+
+            function tcf_getdata_selectoption(json_obj)  {
+                const user_consents = [];
+                JSON.parse(json_obj, (key, value) => {
+                    if(value == true)   {   user_consents.push(key);  }
+                });
+                if(user_consents.length < 1) return undefined;
+                var select_consent = document.createElement('select');
+                select_consent.style = "width: 100%;";
+                for (let i = 0; i < user_consents.length; i++) {
+                    var option_consent = document.createElement('option');
+                    option_consent.innerHTML = user_consents[i];
+                    select_consent.appendChild(option_consent);
+                }
+                return(select_consent.outerHTML);
+            }
+
             function output_to_table_dynamic(table_name, cell_labels, cell_values)   {
                 for (let i = 0; i < cell_labels.length; i++) {
                     var row = document.getElementById(table_name).rows.namedItem(cell_labels[i] + '_row');
@@ -110,11 +127,13 @@
                             var cell_label = row.insertCell(0);
                             cell_label.style = "width: 50%; background-color: #dae4eb;";
                             cell_label.innerHTML = cell_labels[i];
+                            document.getElementById(table_name).appendChild(row);
                         }
                         row.cells.namedItem(cell_labels[i]).innerHTML = cell_values[i];
                     }
                 }
             }
+
         </script>
 
         <script>
@@ -168,7 +187,6 @@
                         },
                     
                         onMessageReceiveData: function (message_type, data) {
-                            //document.getElementById("onmessagereceivedata_data").innerHTML = JSON.stringify(data);
                             const cell_values = [message_type, data.prtnUUID, data.messageId, data.msgDescription, data.bucket, data.uuid, data.categoryId, data.subCategoryId];
                             const cell_labels = ["message_type", "data:prtnUUID", "data:messageId", "data:msgDescription", "data:bucket", "data:uuid", "data:categoryId", "data:subCategoryId"];
                             output_to_table_dynamic("onmessagereceivedata", cell_labels, cell_values);
@@ -200,7 +218,6 @@
             }
 
             function show_tcfping_info(pingReturn, message)    {
-                //document.getElementById("callping_tcfapi").innerHTML = JSON.stringify(pingReturn);
                 const cell_values = [pingReturn.cmpId, pingReturn.cmpVersion, pingReturn.gdprApplies, pingReturn.tcfPolicyVersion, pingReturn.cmpLoaded, pingReturn.cmpStatus, pingReturn.displayStatus, pingReturn.apiVersion];
                 const cell_labels = ["cmpId", "cmpVersion", "gdprApplies", "tcfPolicyVersion", "cmpLoaded", "cmpStatus", "displayStatus", "apiVersion"];
                 output_to_table_dynamic("callping", cell_labels, cell_values);
@@ -208,8 +225,15 @@
             }
 
             function show_tcfgettcdata_info(success, tcdata, message)   {
-                //document.getElementById("tcfapi_gettcdata").innerHTML = JSON.stringify(tcdata);
-                const cell_values = [success, tcdata.addtlConsent, tcdata.cmpId, tcdata.cmpStatus, tcdata.cmpVersion, tcdata.eventStatus, tcdata.gdprApplies, tcdata.isServiceSpecific, tcdata.listenerId, tcdata.publisherCC, tcdata.purposeOneTreatment, tcdata.tcString, tcdata.tcfPolicyVersion, tcdata.useNonStandardStacks, JSON.stringify(tcdata.publisher.consents), JSON.stringify(tcdata.publisher.customPurpose), JSON.stringify(tcdata.publisher.legitimateInterests), JSON.stringify(tcdata.publisher.restrictions), JSON.stringify(tcdata.purpose.consents), JSON.stringify(tcdata.purpose.legitimateInterests), JSON.stringify(tcdata.vendor.consents), JSON.stringify(tcdata.vendor.legitimateInterests)];
+                var publisher_consents = tcf_getdata_selectoption(JSON.stringify(tcdata.publisher.consents));
+                //var publisher_customPurpose_consents = tcf_getdata_selectoption(JSON.stringify(tcdata.publisher.customPurpose));
+                var publisher_legitimateinterests_consents = tcf_getdata_selectoption(JSON.stringify(tcdata.publisher.legitimateInterests));
+                //var publisher_restrictions = tcf_getdata_selectoption(JSON.stringify(tcdata.publisher.restrictions));
+                var purpose_consents = tcf_getdata_selectoption(JSON.stringify(tcdata.purpose.consents));
+                var purpose_legitimateInterests = tcf_getdata_selectoption(JSON.stringify(tcdata.purpose.legitimateInterests));
+                var vendor_consents = tcf_getdata_selectoption(JSON.stringify(tcdata.vendor.consents));
+                var vendor_legitimateInterests = tcf_getdata_selectoption(JSON.stringify(tcdata.vendor.legitimateInterests));
+                const cell_values = [success, tcdata.addtlConsent, tcdata.cmpId, tcdata.cmpStatus, tcdata.cmpVersion, tcdata.eventStatus, tcdata.gdprApplies, tcdata.isServiceSpecific, tcdata.listenerId, tcdata.publisherCC, tcdata.purposeOneTreatment, tcdata.tcString, tcdata.tcfPolicyVersion, tcdata.useNonStandardStacks, publisher_consents, JSON.stringify(tcdata.publisher.customPurpose), publisher_legitimateinterests_consents, JSON.stringify(tcdata.publisher.restrictions), purpose_consents, purpose_legitimateInterests, vendor_consents, vendor_legitimateInterests];
                 const cell_labels = ["success", "addtlConsent", "cmpId", "cmpStatus", "cmpVersion", "eventStatus", "gdprApplies", "isServiceSpecific", "istenerId", "publisherCC", "purposeOneTreatment", "tcString:", "tcfPolicyVersion", "useNonStandardStacks", "publisher:consents", "publisher:customPurpose", "publisher:legitimateInterests", "publisher:restrictions", "purpose:consents", "purpose:legitimateInterests", "vendor:consents", "vendor:legitimateInterests"];
                 output_to_table_dynamic("tcfapi_gettcdata", cell_labels, cell_values);
                 console.log(message);
