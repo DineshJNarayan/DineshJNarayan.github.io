@@ -103,36 +103,32 @@
             const vendor_ids = [];
             const categories = [];
 
-            function update_selects(l_indx)   {
+            function update_purposes(l_indx)   {
                 const selected = categories[l_indx];
                 list_consents = selected.consents;
                 list_purposes = selected.purposes;
-                console.log(list_consents);
-                console.log(list_purposes);
                 const list_categories = ["consent", "legitimate_int", "not_allowed", "disclosure_only"];
                 for (category in list_categories) {
                     var selectBox = document.getElementById(list_categories[category]);
-                    while (selectBox.options.length > 0) {
-                        selectBox.remove(0);
-                    }
+                    selectBox.innerHTML = '';
                 }
                 for(let j = 0; j < list_consents.length; j++)   {
                     if(list_consents[j] == 'CONSENT') var list_id = 'consent';
                     if(list_consents[j] == 'LEGITIMATE_INTEREST') var list_id = 'legitimate_int';
                     if(list_consents[j] == 'NOT_ALLOWED') var list_id = 'not_allowed'; 
                     if(list_consents[j] == 'DISCLOSURE_ONLY') var list_id = 'disclosure_only';
-                    var option_consent = document.createElement('option');
+                    var option_consent = document.createElement('li');
                     option_consent.innerHTML = list_purposes[j];
                     document.getElementById(list_id).appendChild(option_consent);
                 }
-                var span_data = document.getElementById("purposes_counter");
-                span_data.innerHTML = document.getElementById('consent').options.length;
-                var span_data = document.getElementById("legitimate_int_counter");
-                span_data.innerHTML = document.getElementById('legitimate_int').options.length;
-                var span_data = document.getElementById("not_allowed_counter");
-                span_data.innerHTML = document.getElementById('not_allowed').options.length;
-                var span_data = document.getElementById("disclosure_only_counter");
-                span_data.innerHTML = document.getElementById('disclosure_only').options.length;
+                //var span_data = document.getElementById("purposes_counter");
+                //span_data.innerHTML = document.getElementById('consent').getElementsByTagName("li").length;
+                //var span_data = document.getElementById("legitimate_int_counter");
+                //span_data.innerHTML = document.getElementById('legitimate_int').getElementsByTagName("li").length;
+                //var span_data = document.getElementById("not_allowed_counter");
+                //span_data.innerHTML = document.getElementById('not_allowed').getElementsByTagName("li").length;
+                //var span_data = document.getElementById("disclosure_only_counter");
+                //span_data.innerHTML = document.getElementById('disclosure_only').getElementsByTagName("li").length;
             }
 
             function linked_selectoption(json_obj)    {
@@ -165,7 +161,7 @@
                 var select_consent = document.createElement('select');
                 select_consent.id = "vendor_ids";
                 select_consent.style = "width: 100%;";
-                select_consent.setAttribute("onchange", "update_selects(vendor_ids.indexOf(this.value))");
+                select_consent.setAttribute("onchange", "update_purposes(vendor_ids.indexOf(this.value))");
                 for (let i = 0; i < vendor_ids.length; i++) {
                     var option_consent = document.createElement('option');
                     option_consent.innerHTML = vendor_ids[i];
@@ -185,8 +181,7 @@
                     row.appendChild(cell);
                     var cell = document.createElement('td');
                     cell.style = "width: 50%;";
-                    var select_consent = document.createElement('select');
-                    select_consent.style = "width: 100%;";
+                    var select_consent = document.createElement('ol');
                     select_consent.id = list_categories[category];
                     cell.appendChild(select_consent);
                     row.appendChild(cell);
@@ -545,11 +540,15 @@
                 <caption style="color: #FFFFFF; background-color: #E4E4E4;"><strong><code>__tcfapi('getVendorPurposeMapping', 2, function(vpm, success) { console.log(vpm) });</code></strong></caption>
             </table>
         </div>
-        
+
         <div class="w3-row w3-center w3-dark-grey w3-padding-16">
-            <div class="w3-quarter w3-section">
+            <div class="w3-section">
                 <span class="w3-xlarge" id="vendors_counter"></span><br>Vendors
             </div>
+        </div>
+        
+        <!--
+        <div class="w3-row w3-center w3-dark-grey w3-padding-16">
             <div class="w3-quarter w3-section">
                 <span class="w3-xlarge" id="purposes_counter"></span><br>Consent purposes
             </div>
@@ -563,6 +562,7 @@
                 <span class="w3-xlarge" id="disclosure_only_counter"></span><br>Disclosure only purposes
             </div>
         </div>
+        -->
 
         <!-- Second Parallax Image with Portfolio Text -->
         <div class="bgimg-2 w3-display-container w3-opacity-min">
