@@ -103,6 +103,93 @@
             const vendor_ids = [];
             const categories = [];
 
+            function output_consentedpurposes(consentedpurposes)  {
+                var table = document.createElement('table');
+                for(indx in consentedpurposes)   {
+                    purpose = consentedpurposes[indx];
+                    var tr = document.createElement('tr');
+                    if(indx % 2 == 0) tr.style = "background-color:#E4E4E4;";
+                    var td = document.createElement('td');
+                    td.style = "width: 50%;"; 
+                    td.innerHTML = purpose._id;
+                    tr.appendChild(td);
+                    var td = document.createElement('td');
+                    td.style = "width: 50%;";
+                    td.innerHTML = purpose.name;
+                    tr.appendChild(td);
+                    table.appendChild(tr);
+                }
+                return(table.outerHTML);
+            }
+
+            function output_consentedvendors(consentedvendors)  {
+                var table = document.createElement('table');
+                for(indx in consentedvendors)   {
+                    vendor = consentedvendors[indx];
+                    var tr = document.createElement('tr');
+                    var td = document.createElement('td');
+                    td.style = "width: 50%;"; 
+                    td.innerHTML = vendor._id;
+                    tr.appendChild(td);
+                    var td = document.createElement('td');
+                    td.style = "width: 50%;";
+                    td.innerHTML = vendor.name;
+                    tr.appendChild(td);
+                    var td = document.createElement('td');
+                    td.style = "width: 50%;";
+                    td.innerHTML = vendor.vendorType;
+                    tr.appendChild(td);
+                    table.appendChild(tr);
+                }
+                return(table.outerHTML);
+            }
+
+            function output_grants(grants)  {
+                var vendors = Object.keys(grants);
+                var vendorgrants = Object.values(grants);
+                var table = document.createElement('table');
+                for(indx in vendors)   {
+                    var tr = document.createElement('tr');
+                    tr.style = "background-color:#E4E4E4; color: #000000; font-weight: bold;";
+                    var td = document.createElement('td');
+                    td.style = "width: 50%;";
+                    td.innerHTML = "vendor";
+                    tr.appendChild(td);
+                    var td = document.createElement('td');
+                    td.style = "width: 50%;";
+                    td.innerHTML = vendors[indx];
+                    tr.appendChild(td);
+                    table.appendChild(tr);
+                    vendor_info = vendorgrants[indx];
+                    var tr = document.createElement('tr');
+                    tr.style = "background-color:#E4E4E4; color: #000000; font-weight: bold;";
+                    var td = document.createElement('td');
+                    td.style = "width: 50%;";
+                    td.innerHTML = "vendorGrant";
+                    tr.appendChild(td);
+                    var td = document.createElement('td');
+                    td.style = "width: 50%;";
+                    td.innerHTML = vendor_info.vendorGrant
+                    tr.appendChild(td);
+                    table.appendChild(tr);
+                    var purposes = Object.keys(vendor_info.purposeGrants);
+                    var consent = Object.values(vendor_info.purposeGrants);
+                    for(indx2 in purposes)   {
+                        var tr = document.createElement('tr');
+                        var td = document.createElement('td');
+                        td.style = "width: 50%;";
+                        td.innerHTML = purposes[indx2];
+                        tr.appendChild(td);
+                        var td = document.createElement('td');
+                        td.style = "width: 50%;";
+                        td.innerHTML = consent[indx2];
+                        tr.appendChild(td);
+                        table.appendChild(tr);
+                    }
+                }
+                return(table.outerHTML);
+            }
+
             function update_purposes(l_indx)   {
                 const selected = categories[l_indx];
                 list_consents = selected.consents;
@@ -121,14 +208,6 @@
                     option_consent.innerHTML = list_purposes[j];
                     document.getElementById(list_id).appendChild(option_consent);
                 }
-                //var span_data = document.getElementById("purposes_counter");
-                //span_data.innerHTML = document.getElementById('consent').getElementsByTagName("li").length;
-                //var span_data = document.getElementById("legitimate_int_counter");
-                //span_data.innerHTML = document.getElementById('legitimate_int').getElementsByTagName("li").length;
-                //var span_data = document.getElementById("not_allowed_counter");
-                //span_data.innerHTML = document.getElementById('not_allowed').getElementsByTagName("li").length;
-                //var span_data = document.getElementById("disclosure_only_counter");
-                //span_data.innerHTML = document.getElementById('disclosure_only').getElementsByTagName("li").length;
             }
 
             function linked_selectoption(json_obj)    {
@@ -152,6 +231,7 @@
                 if(vendor_ids.length < 1) return undefined;
                 var table = document.createElement('table');
                 var row = document.createElement('tr');
+                row.style = "background-color:#E4E4E4; color: #000000; font-weight: bold;";
                 var cell = document.createElement('td');
                 cell.style = "width: 50%;";
                 cell.innerHTML = "Select a vendor id: ";
@@ -190,21 +270,19 @@
                 return(table.outerHTML);
             }
 
-            function create_selectoption(json_obj)  {
-                json_obj = JSON.stringify(json_obj);
+            function create_list(json_obj)  {
                 const user_consents = [];
-                JSON.parse(json_obj, (key, value) => {
-                    if(value == true)   {   user_consents.push(key);  }
-                });
-                if(user_consents.length < 1) return undefined;
-                var select_consent = document.createElement('select');
-                select_consent.style = "width: 100%;";
-                for (let i = 0; i < user_consents.length; i++) {
-                    var option_consent = document.createElement('option');
-                    option_consent.innerHTML = user_consents[i];
-                    select_consent.appendChild(option_consent);
+                var purpose = Object.keys(json_obj);
+                var grants = Object.values(json_obj);
+                for(indx in grants) {
+                    if(grants[indx] == true) user_consents.push(purpose[indx]);
                 }
-                return(select_consent.outerHTML);
+                if(user_consents.length < 1) return undefined;
+                var tr = document.createElement('tr');
+                var td = document.createElement('td');
+                td.innerHTML = user_consents.join(", ");
+                tr.appendChild(td);
+                return(tr.outerHTML);
             }
 
             function output_table(table_name, cell_labels, cell_values)   {
@@ -258,8 +336,8 @@
                         },
                     
                         onPrivacyManagerAction: function (message_type, pmData) {
-                            const cell_values = [message_type, JSON.stringify(pmData)];
-                            const cell_labels = ["message_type", "pmData"];
+                            const cell_values = [message_type, pmData.purposeConsent, pmData.vendorConsent];
+                            const cell_labels = ["message_type", "purposeConsent", "vendorConsent"];
                             output_table("onprivacymanageraction", cell_labels, cell_values);
                             console.log('onPrivacyManagerAction callback');
                         },
@@ -305,13 +383,7 @@
                         }
 
                     }
-                },
-
-                //getCustomVendorConsents(vendorConsents, success) {
-                //    console.log('>>> test <<< ' + success);
-                //    console.log(vendorConsents);
-                //}
-
+                }
             }
 
             function show_ping(pingReturn)    {
@@ -326,15 +398,21 @@
                 output_table("getvendorpurposemapping_table", cell_labels, cell_values);
             }
 
+            function show_getcustomvendorconsents(success, cvc)    {
+                const cell_values = [success, cvc.newUser, cvc.dateCreated, output_consentedpurposes(cvc.consentedPurposes), output_consentedvendors(cvc.consentedVendors), output_grants(cvc.grants), output_consentedpurposes(cvc.legIntPurposes)];
+                const cell_labels = ["success", "newUser", "dateCreated", "consentedPurposes", "consentedVendors", "grants", "legIntPurposes"];
+                output_table("getcustomvendorconsents", cell_labels, cell_values);
+            }
+
             function show_tcdata(success, tcdata)   {
-                var publisher_consents = create_selectoption(tcdata.publisher.consents);
+                var publisher_consents = create_list(tcdata.publisher.consents);
                 //var publisher_customPurpose_consents = create_selectoption(JSON.stringify(tcdata.publisher.customPurpose));
-                var publisher_legitimateinterests_consents = create_selectoption(tcdata.publisher.legitimateInterests);
+                var publisher_legitimateinterests_consents = create_list(tcdata.publisher.legitimateInterests);
                 //var publisher_restrictions = create_selectoption(JSON.stringify(tcdata.publisher.restrictions));
-                var purpose_consents = create_selectoption(tcdata.purpose.consents);
-                var purpose_legitimateInterests = create_selectoption(tcdata.purpose.legitimateInterests);
-                var vendor_consents = create_selectoption(tcdata.vendor.consents);
-                var vendor_legitimateInterests = create_selectoption(tcdata.vendor.legitimateInterests);
+                var purpose_consents = create_list(tcdata.purpose.consents);
+                var purpose_legitimateInterests = create_list(tcdata.purpose.legitimateInterests);
+                var vendor_consents = create_list(tcdata.vendor.consents);
+                var vendor_legitimateInterests = create_list(tcdata.vendor.legitimateInterests);
                 const cell_values = [success, tcdata.addtlConsent, tcdata.cmpId, tcdata.cmpStatus, tcdata.cmpVersion, tcdata.eventStatus, tcdata.gdprApplies, tcdata.isServiceSpecific, tcdata.listenerId, tcdata.publisherCC, tcdata.purposeOneTreatment, tcdata.tcString, tcdata.tcfPolicyVersion, tcdata.useNonStandardStacks, publisher_consents, JSON.stringify(tcdata.publisher.customPurpose), publisher_legitimateinterests_consents, JSON.stringify(tcdata.publisher.restrictions), purpose_consents, purpose_legitimateInterests, vendor_consents, vendor_legitimateInterests];
                 const cell_labels = ["success", "addtlConsent", "cmpId", "cmpStatus", "cmpVersion", "eventStatus", "gdprApplies", "isServiceSpecific", "listenerId", "publisherCC", "purposeOneTreatment", "tcString:", "tcfPolicyVersion", "useNonStandardStacks", "publisher:consents", "publisher:customPurpose", "publisher:legitimateInterests", "publisher:restrictions", "purpose:consents", "purpose:legitimateInterests", "vendor:consents", "vendor:legitimateInterests"];
                 output_table("tcfapi_gettcdata", cell_labels, cell_values);
@@ -346,6 +424,10 @@
                     __tcfapi('ping', 2, (pingReturn) => {
                         show_ping(pingReturn);
                         console.log('addEventListener('+tcdata.listenerId+')::ping');
+                    });
+                    __tcfapi('getCustomVendorConsents', 2, function(cvc, success) { 
+                        show_getcustomvendorconsents(success, cvc);
+                        console.log('addEventListener('+tcdata.listenerId+')::getCustomVendorConsents'); 
                     });
                     if (tcdata.eventStatus === 'useractioncomplete') {
                         show_tcdata(success, tcdata);
@@ -364,33 +446,10 @@
                 console.log("getVendorPurposeMapping")
             });
 
-            function callback_function_cstm(gvl, success)  {
-                console.log("getCustomVendorConsents response: ", gvl, " + ", success)
-            }
-
             function callback_function_pcc(data, success)  {
                 console.log("postCustomConsent callback")
                 console.log("postCustomConsent response: ", data, success)
             }
-
-            //window._sp_.getCustomVendorConsents((vendorConsents, success) => console.log(vendorConsents));
-            //console.log(window._sp_.config.accountId);
-            //window._sp_.getCustomVendorConsents();
-
-            //console.log("getCustomVendorConsents call")
-            //__tcfapi('getCustomVendorConsents', 2, callback_function_cstm);
-            //__tcfapi('getCustomVendorConsents', 2, function(gvl, success) {console.log("getCustomVendorConsents gvl response >>> ", gvl, " + ", success);});
-
-            //__tcfapi('getCustomVendorConsents', 2, function(vendorConsents, success) {
-            //  if(success){
-            //    //do something for success
-            //    console.log(">> getCustomVendorConsents call 2 <<")
-            //    console.log(vendorConsents);
-            //  } else  {
-            //    //do something else
-            //    console.log(">> getCustomVendorConsents call failed <<")
-            //  }
-            //});
 
             //console.log("postCustomConsent call")
             // --> Add to vendors, working <--
@@ -403,9 +462,6 @@
 
             // --> Add to vendors & legitimate interests, working <--
             //__tcfapi('postCustomConsent', 2, callback_function_pcc, ["5f3bc0d7b8e05c606f3dfc27", "5f477cc6c442796aa67839d9", "5fd78083fc186126cb9fabad", "5f3a3e66ee0a81887437291c", "5fda5252b4f7ae27b97a1dfe", "5e7ced57b8e05c47e418b73c"], [], ["6011ea75c5d9c787531b3ecf", "6011ea75c5d9c787531b3f0e"] );
-
-            //__tcfapi('getVendorPurposeMapping', 2, (vendorPurposeMapping, success) => { console.log(vendorPurposeMapping); });
-            //__tcfapi('getCustomVendorConsents', 2, (vendorPurposeMapping, success) => { console.log(vendorPurposeMapping); });
 
         </script>
         <script src='https://cdn.privacy-mgmt.com/unified/wrapperMessagingWithoutDetection.js' async></script>
@@ -539,6 +595,11 @@
             <table class="d table-bordered" id="getvendorpurposemapping_table">
                 <caption style="color: #FFFFFF; background-color: #E4E4E4;"><strong><code>__tcfapi('getVendorPurposeMapping', 2, function(vpm, success) { console.log(vpm) });</code></strong></caption>
             </table>
+            <hr>
+            <!-- getCustomVendorConsents -->
+            <table class="d table-bordered" id="getcustomvendorconsents">
+                <caption style="color: #FFFFFF; background-color: #E4E4E4;"><strong><code>__tcfapi('getCustomVendorConsents', 2, function(cvc, success) { console.log(cvc); });</code></strong></caption>
+            </table>
         </div>
 
         <div class="w3-row w3-center w3-dark-grey w3-padding-16">
@@ -547,23 +608,6 @@
             </div>
         </div>
         
-        <!--
-        <div class="w3-row w3-center w3-dark-grey w3-padding-16">
-            <div class="w3-quarter w3-section">
-                <span class="w3-xlarge" id="purposes_counter"></span><br>Consent purposes
-            </div>
-            <div class="w3-quarter w3-section">
-                <span class="w3-xlarge" id="legitimate_int_counter"></span><br>Legitimate interest purposes
-            </div>
-            <div class="w3-quarter w3-section">
-                <span class="w3-xlarge" id="not_allowed_counter"></span><br>Purposes not allowed
-            </div>
-            <div class="w3-quarter w3-section">
-                <span class="w3-xlarge" id="disclosure_only_counter"></span><br>Disclosure only purposes
-            </div>
-        </div>
-        -->
-
         <!-- Second Parallax Image with Portfolio Text -->
         <div class="bgimg-2 w3-display-container w3-opacity-min">
             <div class="w3-display-middle">
