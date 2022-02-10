@@ -100,23 +100,30 @@
 
         <script>
 
-            const vendor_ids = [];
-            const categories = [];
+            var vendor_ids = [];
+            var vendor_ids_2 = [];
+            var categories = [];
+            var vendor_grants_list = [];
+
+            function standard_two_cell_row(label, value, style, cell_append=false)    {
+                var tr = document.createElement('tr');
+                if(style) tr.style = style;
+                var td = tr.insertCell(0);
+                td.style = "width: 50%;";
+                if(cell_append) td.appendChild(value); else td.innerHTML = value;
+                var td = tr.insertCell(0);
+                td.style = "width: 50%;";
+                td.innerHTML = label;
+                return(tr);
+            }
 
             function output_consentedpurposes(consentedpurposes)  {
                 var table = document.createElement('table');
                 for(indx in consentedpurposes)   {
                     purpose = consentedpurposes[indx];
-                    var tr = document.createElement('tr');
-                    if(indx % 2 == 0) tr.style = "background-color:#E4E4E4;";
-                    var td = document.createElement('td');
-                    td.style = "width: 50%;"; 
-                    td.innerHTML = purpose._id;
-                    tr.appendChild(td);
-                    var td = document.createElement('td');
-                    td.style = "width: 50%;";
-                    td.innerHTML = purpose.name;
-                    tr.appendChild(td);
+                    style = null;
+                    if(indx % 2 == 0) style = "background-color:#E4E4E4;";
+                    var tr = standard_two_cell_row(purpose._id, purpose.name, style);
                     table.appendChild(tr);
                 }
                 return(table.outerHTML);
@@ -124,69 +131,62 @@
 
             function output_consentedvendors(consentedvendors)  {
                 var table = document.createElement('table');
-                for(indx in consentedvendors)   {
-                    vendor = consentedvendors[indx];
+                consentedvendors.map(vendor => {
                     var tr = document.createElement('tr');
-                    var td = document.createElement('td');
-                    td.style = "width: 50%;"; 
-                    td.innerHTML = vendor._id;
-                    tr.appendChild(td);
-                    var td = document.createElement('td');
-                    td.style = "width: 50%;";
-                    td.innerHTML = vendor.name;
-                    tr.appendChild(td);
-                    var td = document.createElement('td');
-                    td.style = "width: 50%;";
+                    var td = tr.insertCell(0);
+                    td.style = "width: 33%;"; 
                     td.innerHTML = vendor.vendorType;
-                    tr.appendChild(td);
+                    var td = tr.insertCell(0);
+                    td.style = "width: 33%;";
+                    td.innerHTML = vendor.name;
+                    var td = tr.insertCell(0);
+                    td.style = "width: 33%;";
+                    td.innerHTML = vendor._id;
+                    table.appendChild(tr);
+                });
+                return(table.outerHTML);
+            }
+
+            function update_grants(l_indx)    {
+                var vg_data = vendor_grants_list[l_indx];
+                var table = document.getElementById("vendor_grant_list");
+                while (table.rows.length > 1) {
+                    table.deleteRow(1);
+                }
+                var style = "background-color:#E4E4E4; color: #000000; font-weight: bold;";
+                var tr = standard_two_cell_row("vendorGrant", vg_data.vendor_grant, style);
+                table.appendChild(tr);
+                var consents = vg_data.consents;
+                var purposes = vg_data.purposes;
+                for(indx2 in purposes)   {
+                    style = null;
+                    if(indx2 % 2 != 0) style = "background-color:#E4E4E4;";
+                    var tr = standard_two_cell_row(purposes[indx2], consents[indx2], style);
                     table.appendChild(tr);
                 }
                 return(table.outerHTML);
             }
 
             function output_grants(grants)  {
-                var vendors = Object.keys(grants);
+                var purpose_list = [];
+                var consent_list = [];
+                vendor_ids_2 = Object.keys(grants);
                 var vendorgrants = Object.values(grants);
-                var table = document.createElement('table');
-                for(indx in vendors)   {
-                    var tr = document.createElement('tr');
-                    tr.style = "background-color:#E4E4E4; color: #000000; font-weight: bold;";
-                    var td = document.createElement('td');
-                    td.style = "width: 50%;";
-                    td.innerHTML = "vendor";
-                    tr.appendChild(td);
-                    var td = document.createElement('td');
-                    td.style = "width: 50%;";
-                    td.innerHTML = vendors[indx];
-                    tr.appendChild(td);
-                    table.appendChild(tr);
+                for(indx in vendorgrants)   {
                     vendor_info = vendorgrants[indx];
-                    var tr = document.createElement('tr');
-                    tr.style = "background-color:#E4E4E4; color: #000000; font-weight: bold;";
-                    var td = document.createElement('td');
-                    td.style = "width: 50%;";
-                    td.innerHTML = "vendorGrant";
-                    tr.appendChild(td);
-                    var td = document.createElement('td');
-                    td.style = "width: 50%;";
-                    td.innerHTML = vendor_info.vendorGrant
-                    tr.appendChild(td);
-                    table.appendChild(tr);
-                    var purposes = Object.keys(vendor_info.purposeGrants);
-                    var consent = Object.values(vendor_info.purposeGrants);
-                    for(indx2 in purposes)   {
-                        var tr = document.createElement('tr');
-                        var td = document.createElement('td');
-                        td.style = "width: 50%;";
-                        td.innerHTML = purposes[indx2];
-                        tr.appendChild(td);
-                        var td = document.createElement('td');
-                        td.style = "width: 50%;";
-                        td.innerHTML = consent[indx2];
-                        tr.appendChild(td);
-                        table.appendChild(tr);
-                    }
+                    purpose_list = Object.keys(vendor_info.purposeGrants);
+                    consent_list = Object.values(vendor_info.purposeGrants);
+                    var compiled_cats = {
+                        vendor_grant: vendor_info.vendorGrant,
+                        purposes: purpose_list,
+                        consents: consent_list
+                    };
+                    vendor_grants_list.push(compiled_cats);
                 }
+                var table = document.createElement('table');
+                table.id = "vendor_grant_list";
+                var row = vendor_drop_down(vendor_ids_2, "update_grants(vendor_ids_2.indexOf(this.value))");
+                table.appendChild(row);
                 return(table.outerHTML);
             }
 
@@ -194,116 +194,92 @@
                 const selected = categories[l_indx];
                 list_consents = selected.consents;
                 list_purposes = selected.purposes;
-                const list_categories = ["consent", "legitimate_int", "not_allowed", "disclosure_only"];
-                for (category in list_categories) {
-                    var selectBox = document.getElementById(list_categories[category]);
-                    selectBox.innerHTML = '';
-                }
+                const list_categories = ["CONSENT", "LEGITIMATE_INTEREST", "NOT_ALLOWED", "DISCLOSURE_ONLY"];
+                list_categories.map(category => {
+                    document.getElementById(category).innerHTML = '';
+                });
                 for(let j = 0; j < list_consents.length; j++)   {
-                    if(list_consents[j] == 'CONSENT') var list_id = 'consent';
-                    if(list_consents[j] == 'LEGITIMATE_INTEREST') var list_id = 'legitimate_int';
-                    if(list_consents[j] == 'NOT_ALLOWED') var list_id = 'not_allowed'; 
-                    if(list_consents[j] == 'DISCLOSURE_ONLY') var list_id = 'disclosure_only';
                     var option_consent = document.createElement('li');
                     option_consent.innerHTML = list_purposes[j];
-                    document.getElementById(list_id).appendChild(option_consent);
+                    document.getElementById(list_consents[j]).appendChild(option_consent);
+                    document.getElementById(list_consents[j]).appendChild(option_consent);
                 }
+            }
+
+            function vendor_drop_down(vendor_ids, onchange_set)  {
+                var select_consent = document.createElement('select');
+                select_consent.id = "vendor_ids";
+                select_consent.style = "width: 100%;";
+                select_consent.setAttribute("onchange", onchange_set);
+                vendor_ids.map(vendor => {
+                    var option_consent = document.createElement('option');
+                    option_consent.innerHTML = vendor;
+                    select_consent.appendChild(option_consent);
+                });
+                style = "background-color:#E4E4E4; color: #000000; font-weight: bold;";
+                var tr = standard_two_cell_row("Select a vendor id: ", select_consent, style, true);
+                return(tr);
             }
 
             function linked_selectoption(json_obj)    {
                 for(let i = 0; i < json_obj.length; i++)   {
-                    var purpose_array = [];
-                    var consent_array = [];
-                    var my_obj = json_obj[i];
-                    vendor_ids.push(my_obj.vendorId);
-                    var my_categ = my_obj.categories
-                    for(let j = 0; j < my_categ.length; j++)   {
-                        var tmp_obj = my_categ[j];
-                        purpose_array.push(tmp_obj._id);
-                        consent_array.push(tmp_obj.type);
-                    }
+                    var vendor_purposes = [];
+                    var vendor_consents = [];
+                    var vendor = json_obj[i];
+                    vendor_ids.push(vendor.vendorId);
+                    vendor.categories.map(category => {
+                        vendor_purposes.push(category._id);
+                        vendor_consents.push(category.type);
+                    });
                     var compiled_cats = {
-                        purposes: purpose_array,
-                        consents: consent_array
+                        purposes: vendor_purposes,
+                        consents: vendor_consents
                     };
                     categories.push(compiled_cats);
                 }
                 if(vendor_ids.length < 1) return undefined;
                 var table = document.createElement('table');
-                var row = document.createElement('tr');
-                row.style = "background-color:#E4E4E4; color: #000000; font-weight: bold;";
-                var cell = document.createElement('td');
-                cell.style = "width: 50%;";
-                cell.innerHTML = "Select a vendor id: ";
-                row.appendChild(cell);
-                var cell = document.createElement('td');
-                cell.style = "width: 50%;";
-                var select_consent = document.createElement('select');
-                select_consent.id = "vendor_ids";
-                select_consent.style = "width: 100%;";
-                select_consent.setAttribute("onchange", "update_purposes(vendor_ids.indexOf(this.value))");
-                for (let i = 0; i < vendor_ids.length; i++) {
-                    var option_consent = document.createElement('option');
-                    option_consent.innerHTML = vendor_ids[i];
-                    select_consent.appendChild(option_consent);
-                }
-                cell.appendChild(select_consent);
-                row.appendChild(cell);
+                var row = vendor_drop_down(vendor_ids, "update_purposes(vendor_ids.indexOf(this.value))");
                 table.appendChild(row);
                 var span_data = document.getElementById("vendors_counter");
                 span_data.innerHTML = vendor_ids.length;
-                const list_categories = ["consent", "legitimate_int", "not_allowed", "disclosure_only"];
+                const list_categories = ["CONSENT", "LEGITIMATE_INTEREST", "NOT_ALLOWED", "DISCLOSURE_ONLY"];
                 for (category in list_categories) {
-                    var row = document.createElement('tr');
-                    var cell = document.createElement('td');
-                    cell.style = "width: 50%;";
-                    cell.innerHTML = list_categories[category];
-                    row.appendChild(cell);
-                    var cell = document.createElement('td');
-                    cell.style = "width: 50%;";
                     var select_consent = document.createElement('ol');
                     select_consent.id = list_categories[category];
-                    cell.appendChild(select_consent);
-                    row.appendChild(cell);
+                    var row = standard_two_cell_row(list_categories[category], select_consent, null, true);
                     table.appendChild(row);
                 }
                 return(table.outerHTML);
             }
 
             function create_list(json_obj)  {
-                const user_consents = [];
+                var user_consents = [];
                 var purpose = Object.keys(json_obj);
                 var grants = Object.values(json_obj);
                 for(indx in grants) {
                     if(grants[indx] == true) user_consents.push(purpose[indx]);
                 }
-                if(user_consents.length < 1) return undefined;
-                var tr = document.createElement('tr');
-                var td = document.createElement('td');
-                td.innerHTML = user_consents.join(", ");
-                tr.appendChild(td);
+                var tr = standard_two_cell_row(user_consents.join(", "), null, null);
                 return(tr.outerHTML);
             }
 
             function output_table(table_name, cell_labels, cell_values)   {
                 for (let i = 0; i < cell_labels.length; i++) {
                     var row = document.getElementById(table_name).rows.namedItem(cell_labels[i] + '_row');
-                    if(typeof cell_values[i]=='undefined')    {
-                        if(row)    {    row.parentNode.removeChild(row);    }
-                    } else {
-                        if(row === null)    {
-                            var row = document.getElementById(table_name).insertRow(0);
-                            row.id = cell_labels[i] + '_row';
-                            var cell_data = row.insertCell(0);
-                            cell_data.style = "width: 50%; align-content: center; background-color: #ECE9E7; word-wrap: break-word;";
-                            cell_data.id = cell_labels[i];
-                            var cell_label = row.insertCell(0);
-                            cell_label.style = "width: 50%; background-color: #dae4eb;";
-                            cell_label.innerHTML = cell_labels[i];
-                            document.getElementById(table_name).appendChild(row);
-                        }
-                        row.cells.namedItem(cell_labels[i]).innerHTML = cell_values[i];
+                    cell_values[i] = (typeof cell_values[i]=='undefined') ? null : cell_values[i];
+                    if(row === null)    {
+                        var row = document.getElementById(table_name).insertRow(0);
+                        row.id = cell_labels[i] + '_row';
+                        var cell_data = row.insertCell(0);
+                        cell_data.style = "width: 50%; align-content: center; background-color: #ECE9E7; word-wrap: break-word;";
+                        cell_data.id = cell_labels[i];
+                        var cell_label = row.insertCell(0);
+                        cell_label.style = "width: 50%; background-color: #dae4eb;";
+                        cell_label.innerHTML = cell_labels[i];
+                        document.getElementById(table_name).appendChild(row);
                     }
+                    row.cells.namedItem(cell_labels[i]).innerHTML = cell_values[i];
                 }
             }
 
@@ -393,12 +369,16 @@
             }
 
             function show_vendorpurposemapping(success, vpm)    {
+                vendor_ids = [];
+                categories = [];
                 const cell_values = [success, linked_selectoption(vpm)];
                 const cell_labels = ["success", "vendor purpose mapping"];
                 output_table("getvendorpurposemapping_table", cell_labels, cell_values);
             }
 
             function show_getcustomvendorconsents(success, cvc)    {
+                vendor_grants_list = [];
+                vendor_ids_2 = [];
                 const cell_values = [success, cvc.newUser, cvc.dateCreated, output_consentedpurposes(cvc.consentedPurposes), output_consentedvendors(cvc.consentedVendors), output_grants(cvc.grants), output_consentedpurposes(cvc.legIntPurposes)];
                 const cell_labels = ["success", "newUser", "dateCreated", "consentedPurposes", "consentedVendors", "grants", "legIntPurposes"];
                 output_table("getcustomvendorconsents", cell_labels, cell_values);
@@ -423,33 +403,33 @@
                 if(success) {
                     __tcfapi('ping', 2, (pingReturn) => {
                         show_ping(pingReturn);
-                        console.log('addEventListener('+tcdata.listenerId+')::ping');
+                        console.log('addEventListener('+tcdata.listenerId+') calling ping');
                     });
                     __tcfapi('getCustomVendorConsents', 2, function(cvc, success) { 
                         show_getcustomvendorconsents(success, cvc);
-                        console.log('addEventListener('+tcdata.listenerId+')::getCustomVendorConsents'); 
+                        console.log('addEventListener('+tcdata.listenerId+') calling getCustomVendorConsents'); 
                     });
                     if (tcdata.eventStatus === 'useractioncomplete') {
                         show_tcdata(success, tcdata);
-                        console.log('addEventListener('+tcdata.listenerId+')::useractioncomplete::tcdata');
+                        console.log('addEventListener('+tcdata.listenerId+') calling getTCData and tcdata.eventStatus is useractioncomplete');
                     } else if (tcdata.eventStatus === 'tcloaded') {
                         show_tcdata(success, tcdata);
-                        console.log('addEventListener('+tcdata.listenerId+')::tcloaded::tcdata');
+                        console.log('addEventListener('+tcdata.listenerId+') calling getTCData and tcdata.eventStatus is tcloaded');
                     } else if (tcdata.eventStatus === 'cmpuishown') {
-                        console.log('addEventListener('+tcdata.listenerId+')::eventStatus is cmpuishown');
+                        console.log('addEventListener('+tcdata.listenerId+') calling and tcdata.eventStatus is cmpuishown');
                     }
                 }
             });
 
             __tcfapi('getVendorPurposeMapping', 2, function(vpm, success) {
                 show_vendorpurposemapping(success, vpm);
-                console.log("getVendorPurposeMapping")
+                console.log("getVendorPurposeMapping called on page load")
             });
 
-            function callback_function_pcc(data, success)  {
-                console.log("postCustomConsent callback")
-                console.log("postCustomConsent response: ", data, success)
-            }
+            //function callback_function_pcc(data, success)  {
+            //    console.log("postCustomConsent callback")
+            //    console.log("postCustomConsent response: ", data, success)
+            //}
 
             //console.log("postCustomConsent call")
             // --> Add to vendors, working <--
@@ -608,58 +588,6 @@
             </div>
         </div>
         
-        <!-- Second Parallax Image with Portfolio Text -->
-        <div class="bgimg-2 w3-display-container w3-opacity-min">
-            <div class="w3-display-middle">
-                <span class="w3-xxlarge w3-text-white w3-wide">PORTFOLIO</span>
-            </div>
-        </div>
-
-        <!-- Container (Portfolio Section) -->
-        <div class="w3-content w3-container w3-padding-64" id="portfolio">
-            <h3 class="w3-center">MY WORK</h3>
-            <p class="w3-center"><em>Here are some of my latest lorem work ipsum tipsum.<br> Click on the images to make them bigger</em></p><br>
-            <!-- Responsive Grid. Four columns on tablets, laptops and desktops. Will stack on mobile devices/small screens (100% width) -->
-            <div class="w3-row-padding w3-center">
-                <div class="w3-col m3">
-                    <img src="https://www.w3schools.com/w3images/p1.jpg" style="width:100%" onclick="onClick(this)" class="w3-hover-opacity" alt="The mist over the mountains">
-                </div>
-                <div class="w3-col m3">
-                    <img src="https://www.w3schools.com/w3images/p2.jpg" style="width:100%" onclick="onClick(this)" class="w3-hover-opacity" alt="Coffee beans">
-                </div>
-                <div class="w3-col m3">
-                    <img src="https://www.w3schools.com/w3images/p3.jpg" style="width:100%" onclick="onClick(this)" class="w3-hover-opacity" alt="Bear closeup">
-                </div>
-                <div class="w3-col m3">
-                    <img src="https://www.w3schools.com/w3images/p4.jpg" style="width:100%" onclick="onClick(this)" class="w3-hover-opacity" alt="Quiet ocean">
-                </div>
-            </div>
-            <div class="w3-row-padding w3-center w3-section">
-                <div class="w3-col m3">
-                    <img src="https://www.w3schools.com/w3images/p5.jpg" style="width:100%" onclick="onClick(this)" class="w3-hover-opacity" alt="The mist">
-                </div>
-                <div class="w3-col m3">
-                    <img src="https://www.w3schools.com/w3images/p6.jpg" style="width:100%" onclick="onClick(this)" class="w3-hover-opacity" alt="My beloved typewriter">
-                </div>
-                <div class="w3-col m3">
-                    <img src="https://www.w3schools.com/w3images/p7.jpg" style="width:100%" onclick="onClick(this)" class="w3-hover-opacity" alt="Empty ghost train">
-                </div>
-                <div class="w3-col m3">
-                    <img src="https://www.w3schools.com/w3images/p8.jpg" style="width:100%" onclick="onClick(this)" class="w3-hover-opacity" alt="Sailing">
-                </div>
-                <button class="w3-button w3-padding-large w3-light-grey" style="margin-top:64px">LOAD MORE</button>
-            </div>
-        </div>
-
-        <!-- Modal for full size images on click-->
-        <div id="modal01" class="w3-modal w3-black" onclick="this.style.display='none'">
-            <span class="w3-button w3-large w3-black w3-display-topright" title="Close Modal Image"><i class="fa fa-remove"></i></span>
-            <div class="w3-modal-content w3-animate-zoom w3-center w3-transparent w3-padding-64">
-                <img id="img01" class="w3-image">
-                <p id="caption" class="w3-opacity w3-large"></p>
-            </div>
-        </div>
-
         <!-- Third Parallax Image with Portfolio Text -->
         <div class="bgimg-3 w3-display-container w3-opacity-min">
             <div class="w3-display-middle">
@@ -670,7 +598,6 @@
         <!-- Container (Contact Section) -->
         <div class="w3-content w3-container w3-padding-64" id="contact">
             <h3 class="w3-center">WHERE I WORK</h3>
-            <p class="w3-center"><em>I'd love your feedback!</em></p>
             <div class="w3-row w3-padding-32 w3-section">
                 <div class="w3-col m4 w3-container">
                     <img src="https://www.w3schools.com/w3images/map.jpg" class="w3-image w3-round" style="width:100%">
@@ -717,14 +644,6 @@
         
         <script>
             
-            // Modal Image Gallery
-            function onClick(element) {
-                document.getElementById("img01").src = element.src;
-                document.getElementById("modal01").style.display = "block";
-                var captionText = document.getElementById("caption");
-                captionText.innerHTML = element.alt;
-            }
-
             // Change style of navbar on scroll
             window.onscroll = function() {myFunction()};
             function myFunction() {
