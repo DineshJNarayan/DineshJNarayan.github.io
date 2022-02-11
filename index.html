@@ -100,12 +100,24 @@
 
         <script>
 
-            var vendor_ids = [];
-            var vendor_ids_2 = [];
-            var categories = [];
-            var vendor_grants_list = [];
+            var vendors_vpm = [];
+            var vendors_cvc = [];
+            var vpm_obj = [];
+            var cvc_obj = [];
+            //accountId: 1423,
+            //propertyHref: "https://www.playpilot.com",
+            //pmid: 417982,
+            //baseendpoint:https://cmp.playpilot.com,
+            var box_accountid = 1732;
+            var box_propertyhref = 'https://dineshjnarayan.github.io/';
+            var box_pmid = 547186;
+            var box_baseendpoint = 'https://cdn.privacy-mgmt.com';
 
             function standard_two_cell_row(label, value, style, cell_append=false)    {
+                //Nearly all outputs from api calls will be displayed as rows with two cells each. One cell for the description, the second for the value
+                //When flag cell_append is true the value is a DOM object to be appended to the cell
+                //Called by show_getcustomvendorconsents -> table_consentedpurposes, show_getcustomvendorconsents -> table_consentedvendors, show_getcustomvendorconsents -> cvc_grants -> show_cvc_grants
+                //Called by vendor_selectoption, show_vendorpurposemapping -> vpm_mapping -> show_vpm
                 var tr = document.createElement('tr');
                 if(style) tr.style = style;
                 var td = tr.insertCell(0);
@@ -117,19 +129,23 @@
                 return(tr);
             }
 
-            function output_consentedpurposes(consentedpurposes)  {
+            function table_consentedpurposes(consentedpurposes)  {
+                //TCF CustomVendorConsents. Display all consented purposes
+                //Called by show_getcustomvendorconsents
                 var table = document.createElement('table');
-                for(indx in consentedpurposes)   {
-                    purpose = consentedpurposes[indx];
-                    style = null;
-                    if(indx % 2 == 0) style = "background-color:#E4E4E4;";
+                var i = 0;
+                consentedpurposes.map(purpose => {
+                    var style = null;
+                    if(i++ % 2 == 0) style = "background-color:#E4E4E4;";
                     var tr = standard_two_cell_row(purpose._id, purpose.name, style);
                     table.appendChild(tr);
-                }
+                });
                 return(table.outerHTML);
             }
 
-            function output_consentedvendors(consentedvendors)  {
+            function table_consentedvendors(consentedvendors)  {
+                //TCF CustomVendorConsents. Display all consented custom vendors
+                //Called by show_getcustomvendorconsents
                 var table = document.createElement('table');
                 consentedvendors.map(vendor => {
                     var tr = document.createElement('tr');
@@ -147,124 +163,113 @@
                 return(table.outerHTML);
             }
 
-            function update_grants(l_indx)    {
-                var vg_data = vendor_grants_list[l_indx];
+            function show_cvc_grants(vendor_indx)    {
+                //TCF CustomVendorConsents. For a selected vendor, update the consent attributed to their purposes and vendor grant
+                //Called by show_getcustomvendorconsents -> cvc_grants
+                var vendorgrants = Object.values(cvc_obj.grants);
+                var vendor_data = vendorgrants[vendor_indx];
                 var table = document.getElementById("vendor_grant_list");
                 while (table.rows.length > 1) {
                     table.deleteRow(1);
                 }
                 var style = "background-color:#E4E4E4; color: #000000; font-weight: bold;";
-                var tr = standard_two_cell_row("vendorGrant", vg_data.vendor_grant, style);
+                var tr = standard_two_cell_row("vendorGrant", vendor_data.vendorGrant, style);
                 table.appendChild(tr);
-                var consents = vg_data.consents;
-                var purposes = vg_data.purposes;
-                for(indx2 in purposes)   {
+                var purposes = Object.keys(vendor_data.purposeGrants);
+                var consents = Object.values(vendor_data.purposeGrants);
+                for(i in purposes)   {
                     style = null;
-                    if(indx2 % 2 != 0) style = "background-color:#E4E4E4;";
-                    var tr = standard_two_cell_row(purposes[indx2], consents[indx2], style);
+                    if(i % 2 != 0) style = "background-color:#E4E4E4;";
+                    var tr = standard_two_cell_row(purposes[i], consents[i], style);
                     table.appendChild(tr);
                 }
                 return(table.outerHTML);
             }
 
-            function output_grants(grants)  {
-                var purpose_list = [];
-                var consent_list = [];
-                vendor_ids_2 = Object.keys(grants);
-                var vendorgrants = Object.values(grants);
-                for(indx in vendorgrants)   {
-                    vendor_info = vendorgrants[indx];
-                    purpose_list = Object.keys(vendor_info.purposeGrants);
-                    consent_list = Object.values(vendor_info.purposeGrants);
-                    var compiled_cats = {
-                        vendor_grant: vendor_info.vendorGrant,
-                        purposes: purpose_list,
-                        consents: consent_list
-                    };
-                    vendor_grants_list.push(compiled_cats);
-                }
+            function cvc_grants(grants)  {
+                //TCF CustomVendorConsents. For any selected vendor, show the consent attributed to their purposes and vendor grant
+                //Called by show_getcustomvendorconsents. The IAB TCF lists consented purposes as consentedPurposes in this API response
+                vendors_cvc = Object.keys(grants);
                 var table = document.createElement('table');
                 table.id = "vendor_grant_list";
-                var row = vendor_drop_down(vendor_ids_2, "update_grants(vendor_ids_2.indexOf(this.value))");
+                var row = vendor_selectoption(vendors_cvc, "show_cvc_grants(vendors_cvc.indexOf(this.value))");
                 table.appendChild(row);
                 return(table.outerHTML);
             }
 
-            function update_purposes(l_indx)   {
-                const selected = categories[l_indx];
-                list_consents = selected.consents;
-                list_purposes = selected.purposes;
-                const list_categories = ["CONSENT", "LEGITIMATE_INTEREST", "NOT_ALLOWED", "DISCLOSURE_ONLY"];
-                list_categories.map(category => {
-                    document.getElementById(category).innerHTML = '';
+            function show_vpm(vendor_indx)   {
+                //TCF VendorPurposeMapping. For a selected vendor, update their attributed purposes and legal basis
+                //Called by show_vendorpurposemapping -> vpm_mapping
+                var vendor = vpm_obj[vendor_indx];
+                const category_types = ["CONSENT", "LEGITIMATE_INTEREST", "NOT_ALLOWED", "DISCLOSURE_ONLY"];
+                category_types.map(type => {
+                    document.getElementById(type).innerHTML = '';
                 });
-                for(let j = 0; j < list_consents.length; j++)   {
-                    var option_consent = document.createElement('li');
-                    option_consent.innerHTML = list_purposes[j];
-                    document.getElementById(list_consents[j]).appendChild(option_consent);
-                    document.getElementById(list_consents[j]).appendChild(option_consent);
-                }
+                vendor.categories.map(category => {
+                    var purpose_id = document.createElement('li');
+                    purpose_id.innerHTML = category._id;
+                    document.getElementById(category.type).appendChild(purpose_id);
+                });
             }
 
-            function vendor_drop_down(vendor_ids, onchange_set)  {
-                var select_consent = document.createElement('select');
-                select_consent.id = "vendor_ids";
-                select_consent.style = "width: 100%;";
-                select_consent.setAttribute("onchange", onchange_set);
-                vendor_ids.map(vendor => {
-                    var option_consent = document.createElement('option');
-                    option_consent.innerHTML = vendor;
-                    select_consent.appendChild(option_consent);
+            function vendor_selectoption(vendor_id_list, onchange_set)  {
+                //TCF VendorPurposeMapping & CustomVendorConsent. Generate select-option box with list of vendor ids
+                //Called by show_vendorpurposemapping -> vpm_mapping, show_getcustomvendorconsents -> cvc_grants
+                var select_vendor = document.createElement('select');
+                select_vendor.id = "vendor_ids";
+                select_vendor.style = "width: 100%;";
+                select_vendor.setAttribute("onchange", onchange_set);
+                vendor_id_list.map(vendor_id => {
+                    var option_vendor_id = document.createElement('option');
+                    option_vendor_id.innerHTML = vendor_id;
+                    select_vendor.appendChild(option_vendor_id);
                 });
-                style = "background-color:#E4E4E4; color: #000000; font-weight: bold;";
-                var tr = standard_two_cell_row("Select a vendor id: ", select_consent, style, true);
+                style = "background-color:#37383D; color: #FFFFFF; font-weight: bold;";
+                var tr = standard_two_cell_row("Select a vendor id: ", select_vendor, style, true);
                 return(tr);
             }
 
-            function linked_selectoption(json_obj)    {
-                for(let i = 0; i < json_obj.length; i++)   {
-                    var vendor_purposes = [];
-                    var vendor_consents = [];
-                    var vendor = json_obj[i];
-                    vendor_ids.push(vendor.vendorId);
-                    vendor.categories.map(category => {
-                        vendor_purposes.push(category._id);
-                        vendor_consents.push(category.type);
-                    });
-                    var compiled_cats = {
-                        purposes: vendor_purposes,
-                        consents: vendor_consents
-                    };
-                    categories.push(compiled_cats);
-                }
-                if(vendor_ids.length < 1) return undefined;
+            function vpm_mapping(vendorpurposemapping_obj)    {
+                //TCF VendorPurposeMapping. For any selected vendor, show the legal basis attributed to their purposes
+                //Called by show_vendorpurposemapping. The IAB TCF lists vendor legal basis as categories types in this API response
+                //Purposes are listed as categories
+                vendorpurposemapping_obj.map(vendor => {
+                    vendors_vpm.push(vendor.vendorId);
+                });
+                if(vendors_vpm.length < 1) return undefined;
                 var table = document.createElement('table');
-                var row = vendor_drop_down(vendor_ids, "update_purposes(vendor_ids.indexOf(this.value))");
+                var row = vendor_selectoption(vendors_vpm, "show_vpm(vendors_vpm.indexOf(this.value))");
                 table.appendChild(row);
                 var span_data = document.getElementById("vendors_counter");
-                span_data.innerHTML = vendor_ids.length;
-                const list_categories = ["CONSENT", "LEGITIMATE_INTEREST", "NOT_ALLOWED", "DISCLOSURE_ONLY"];
-                for (category in list_categories) {
-                    var select_consent = document.createElement('ol');
-                    select_consent.id = list_categories[category];
-                    var row = standard_two_cell_row(list_categories[category], select_consent, null, true);
+                span_data.innerHTML = vendors_vpm.length;
+                const list_categories_types = ["CONSENT", "LEGITIMATE_INTEREST", "NOT_ALLOWED", "DISCLOSURE_ONLY"];
+                list_categories_types.map(type => {
+                    var category_type = document.createElement('ol');
+                    category_type.id = type;
+                    var row = standard_two_cell_row(type, category_type, null, true);
                     table.appendChild(row);
-                }
+                });
                 return(table.outerHTML);
             }
 
-            function create_list(json_obj)  {
-                var user_consents = [];
-                var purpose = Object.keys(json_obj);
-                var grants = Object.values(json_obj);
-                for(indx in grants) {
-                    if(grants[indx] == true) user_consents.push(purpose[indx]);
+            function list_consented(tcdata_obj)  {
+                //TCF getTCData. Create a simple list from TCF data objects for publisher consents & legitimate interests, purpose_consents & legitimate interests, vendor consents & legitimate interests
+                //To avoid a very large list being shown only ids of purposes, vendors, publishers that have consent are listed
+                //Called by show_tcdata
+                var list_consented = [];
+                var id_list = Object.keys(tcdata_obj);
+                var consented = Object.values(tcdata_obj);
+                for(indx in consented) {
+                    if(consented[indx] == true) list_consented.push(id_list[indx]);
                 }
-                var tr = standard_two_cell_row(user_consents.join(", "), null, null);
+                var tr = standard_two_cell_row(list_consented.join(", "), null, null);
                 return(tr.outerHTML);
             }
 
             function output_table(table_name, cell_labels, cell_values)   {
+                //Results from all API calls are displayed through a table. The functions called before collate and format the data to be published in tables of a set standard
+                //cell_labels is the description. cell_values is the information to be shown i.e. text, numbers, a DOM object like a select option box
+                //Called by show_ping, show_vendorpurposemapping, show_getcustomvendorconsents, show_tcdata, onMessageReady, onMessageChoiceSelect, onPrivacyManagerAction, onConsentReady, onPMCancel, onMessageReceiveData, onSPPMObjectReady
                 for (let i = 0; i < cell_labels.length; i++) {
                     var row = document.getElementById(table_name).rows.namedItem(cell_labels[i] + '_row');
                     cell_values[i] = (typeof cell_values[i]=='undefined') ? null : cell_values[i];
@@ -286,14 +291,35 @@
         </script>
 
         <script>
+
             window._sp_queue = [];
+
+            var url = new URL(window.location.href);
+            if(url.searchParams.get("accountid").length > 0) {
+                box_accountid = url.searchParams.get("accountid"); 
+            }
+            if(url.searchParams.get("propertyhref").length > 0) {
+                box_propertyhref = url.searchParams.get("propertyhref");
+            }
+            if(url.searchParams.get("pmid").length > 0) {
+                box_pmid = url.searchParams.get("pmid");   
+            }
+            if(url.searchParams.get("baseendpoint").length > 0) {
+                box_baseendpoint = url.searchParams.get("baseendpoint");   
+            }
+            window.onload = function() {
+                document.getElementById("accountid").value = box_accountid;
+                document.getElementById("propertyhref").value = box_propertyhref;
+                document.getElementById("pmid").value = box_pmid;
+                document.getElementById("baseendpoint").value = box_baseendpoint;
+            }
+            
             window._sp_ = {
+                
                 config: {
-                    accountId: 1732,
-                    propertyHref: "https://dineshjnarayan.github.io/",
-                    //accountId: 1423,
-                    //propertyHref: "https://www.playpilot.com",
-                    baseEndpoint: 'https://cdn.privacy-mgmt.com',
+                    accountId: box_accountid,
+                    propertyHref: box_propertyhref,
+                    baseEndpoint: box_baseendpoint,
                     gdpr: { },
                     events: {
 
@@ -361,7 +387,7 @@
                     }
                 }
             }
-
+        
             function show_ping(pingReturn)    {
                 const cell_values = [pingReturn.cmpId, pingReturn.cmpVersion, pingReturn.gdprApplies, pingReturn.tcfPolicyVersion, pingReturn.cmpLoaded, pingReturn.cmpStatus, pingReturn.displayStatus, pingReturn.apiVersion];
                 const cell_labels = ["cmpId", "cmpVersion", "gdprApplies", "tcfPolicyVersion", "cmpLoaded", "cmpStatus", "displayStatus", "apiVersion"];
@@ -369,30 +395,30 @@
             }
 
             function show_vendorpurposemapping(success, vpm)    {
-                vendor_ids = [];
-                categories = [];
-                const cell_values = [success, linked_selectoption(vpm)];
+                vpm_obj = vpm;
+                vendors_vpm = [];
+                const cell_values = [success, vpm_mapping(vpm)];
                 const cell_labels = ["success", "vendor purpose mapping"];
                 output_table("getvendorpurposemapping_table", cell_labels, cell_values);
             }
 
             function show_getcustomvendorconsents(success, cvc)    {
-                vendor_grants_list = [];
-                vendor_ids_2 = [];
-                const cell_values = [success, cvc.newUser, cvc.dateCreated, output_consentedpurposes(cvc.consentedPurposes), output_consentedvendors(cvc.consentedVendors), output_grants(cvc.grants), output_consentedpurposes(cvc.legIntPurposes)];
+                cvc_obj = cvc;
+                vendors_cvc = [];
+                const cell_values = [success, cvc.newUser, cvc.dateCreated, table_consentedpurposes(cvc.consentedPurposes), table_consentedvendors(cvc.consentedVendors), cvc_grants(cvc.grants), table_consentedpurposes(cvc.legIntPurposes)];
                 const cell_labels = ["success", "newUser", "dateCreated", "consentedPurposes", "consentedVendors", "grants", "legIntPurposes"];
                 output_table("getcustomvendorconsents", cell_labels, cell_values);
             }
 
             function show_tcdata(success, tcdata)   {
-                var publisher_consents = create_list(tcdata.publisher.consents);
+                var publisher_consents = list_consented(tcdata.publisher.consents);
                 //var publisher_customPurpose_consents = create_selectoption(JSON.stringify(tcdata.publisher.customPurpose));
-                var publisher_legitimateinterests_consents = create_list(tcdata.publisher.legitimateInterests);
+                var publisher_legitimateinterests_consents = list_consented(tcdata.publisher.legitimateInterests);
                 //var publisher_restrictions = create_selectoption(JSON.stringify(tcdata.publisher.restrictions));
-                var purpose_consents = create_list(tcdata.purpose.consents);
-                var purpose_legitimateInterests = create_list(tcdata.purpose.legitimateInterests);
-                var vendor_consents = create_list(tcdata.vendor.consents);
-                var vendor_legitimateInterests = create_list(tcdata.vendor.legitimateInterests);
+                var purpose_consents = list_consented(tcdata.purpose.consents);
+                var purpose_legitimateInterests = list_consented(tcdata.purpose.legitimateInterests);
+                var vendor_consents = list_consented(tcdata.vendor.consents);
+                var vendor_legitimateInterests = list_consented(tcdata.vendor.legitimateInterests);
                 const cell_values = [success, tcdata.addtlConsent, tcdata.cmpId, tcdata.cmpStatus, tcdata.cmpVersion, tcdata.eventStatus, tcdata.gdprApplies, tcdata.isServiceSpecific, tcdata.listenerId, tcdata.publisherCC, tcdata.purposeOneTreatment, tcdata.tcString, tcdata.tcfPolicyVersion, tcdata.useNonStandardStacks, publisher_consents, JSON.stringify(tcdata.publisher.customPurpose), publisher_legitimateinterests_consents, JSON.stringify(tcdata.publisher.restrictions), purpose_consents, purpose_legitimateInterests, vendor_consents, vendor_legitimateInterests];
                 const cell_labels = ["success", "addtlConsent", "cmpId", "cmpStatus", "cmpVersion", "eventStatus", "gdprApplies", "isServiceSpecific", "listenerId", "publisherCC", "purposeOneTreatment", "tcString:", "tcfPolicyVersion", "useNonStandardStacks", "publisher:consents", "publisher:customPurpose", "publisher:legitimateInterests", "publisher:restrictions", "purpose:consents", "purpose:legitimateInterests", "vendor:consents", "vendor:legitimateInterests"];
                 output_table("tcfapi_gettcdata", cell_labels, cell_values);
@@ -426,6 +452,11 @@
                 console.log("getVendorPurposeMapping called on page load")
             });
 
+            __tcfapi('getTCData', 2, function(tcdata,success)   {
+                show_tcdata(success, tcdata);
+                console.log("getTCData called on page load");
+            });
+
             //function callback_function_pcc(data, success)  {
             //    console.log("postCustomConsent callback")
             //    console.log("postCustomConsent response: ", data, success)
@@ -455,7 +486,7 @@
                 <a href="#home" class="w3-bar-item w3-button">HOME</a>
                 <a href="#sp_callbacks" class="w3-bar-item w3-button w3-hide-small"><i class="fa fa-user"></i> SOURCEPOINT CALLBACKS</a>
                 <a href="#tcf_apis" class="w3-bar-item w3-button w3-hide-small"><i class="fa fa-user"></i> TCF V2 APIS</a>
-                <a onclick="window._sp_.gdpr.loadPrivacyManagerModal('547186', 'purposes')" href="javascript:void(0);" class="w3-bar-item w3-button w3-hide-small"><i class="fa fa-th"></i> PRIVACY MANAGER</a>
+                <a onclick="window._sp_.gdpr.loadPrivacyManagerModal(box_pmid, 'purposes')" href="javascript:void(0);" class="w3-bar-item w3-button w3-hide-small"><i class="fa fa-th"></i> PRIVACY MANAGER</a>
                 <a href="#contact" class="w3-bar-item w3-button w3-hide-small"><i class="fa fa-envelope"></i> CONTACT</a>
                 <a href="#" class="w3-bar-item w3-button w3-hide-small w3-right w3-hover-red">
                     <i class="fa fa-search"></i>
@@ -479,34 +510,68 @@
         </div>
 
         <div class="w3-content w3-container w3-padding-64" id="intro">
+            <!--
             <div class="w3-row">
                 <div class="w3-col m6 w3-center w3-padding-large">
                     <p><b><i class="fa fa-user w3-margin-right"></i>My Name</b></p><br>
                     <img src="https://www.w3schools.com/w3images/avatar_hat.jpg" class="w3-round w3-image w3-opacity w3-hover-opacity-off" alt="Photo of Me" width="500" height="333">
                 </div>
-                <!-- Display adblock message here -->
                 <div class="sourcepoint-inline-message" id="adblock_notify"><span></span></div>
-                    <!-- Hide this text on small devices -->
                     <div class="w3-col m6 w3-hide-small w3-padding-large">
-                    <p> Welcome to my website. I am lorem ipsum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure
-                        dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do eiusmod tempor
-                        incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                        <form action="/action_page.php">
+                            <label for="fname">accoundId:</label>
+                            <input type="text" id="accountid" name="accountid"><br><br>
+                            <label for="lname">propertyHref:</label>
+                            <input type="text" id="propertyhref" name="propertyhref"><br><br>
+                            <label for="lname">pmId:</label>
+                            <input type="text" id="pmid" name="pmid"><br><br>
+                            <input type="submit" value="Submit">
+                        </form>
                 </div>
             </div>
             <p class="w3-large w3-center w3-padding-16">I'm really good at:</p>
-            <p class="w3-wide"><i class="fa fa-camera"></i>Photography</p>
+            -->
+            <p class="w3-wide"><i class="fa fa-laptop"></i>accoundId</p>
             <div class="w3-light-grey">
-                <div class="w3-container w3-padding-small w3-dark-grey w3-center" style="width:90%">90%</div>
+                <!-- <div class="w3-container w3-padding-small w3-dark-grey w3-center" style="width:90%">90%</div> -->
+                <input type="text" id="accountid" name="accountid" value="1732">
             </div>
-            <p class="w3-wide"><i class="fa fa-laptop"></i>Web Design</p>
+            <p class="w3-wide"><i class="fa fa-laptop"></i>propertyHref</p>
             <div class="w3-light-grey">
-                <div class="w3-container w3-padding-small w3-dark-grey w3-center" style="width:85%">85%</div>
+                <!-- <div class="w3-container w3-padding-small w3-dark-grey w3-center" style="width:85%">85%</div> -->
+                <input type="text" id="propertyhref" name="propertyhref" value="https://dineshjnarayan.github.io/">
             </div>
-            <p class="w3-wide"><i class="fa fa-photo"></i>Photoshop</p>
+            <p class="w3-wide"><i class="fa fa-laptop"></i>pmId</p>
             <div class="w3-light-grey">
-                <div class="w3-container w3-padding-small w3-dark-grey w3-center" style="width:75%">75%</div>
+                <!-- <div class="w3-container w3-padding-small w3-dark-grey w3-center" style="width:75%">75%</div> -->
+                <input type="text" id="pmid" name="pmid" value="547186">
+            </div>
+
+            <p class="w3-wide"><i class="fa fa-laptop"></i>baseEndpoint</p>
+            <div class="w3-light-grey">
+                <!-- <div class="w3-container w3-padding-small w3-dark-grey w3-center" style="width:75%">75%</div> -->
+                <input type="text" id="baseendpoint" name="baseendpoint" value="https://cdn.privacy-mgmt.com">
+            </div>
+
+            <p class="w3-wide"><i class="fa fa-laptop"></i>Submit</p>
+            <div class="w3-light-grey">
+                <!-- <div class="w3-container w3-padding-small w3-dark-grey w3-center" style="width:85%">85%</div> -->
+                <button onClick="refreshPage();">Submit</button><button onClick="default_val();">Default</button>
             </div>
         </div>
+
+        <script>
+            function refreshPage(){
+                var url = '?accountid=' + document.getElementById('accountid').value + '&propertyhref=' + encodeURIComponent(document.getElementById('propertyhref').value) + '&pmid=' + document.getElementById('pmid').value + '&baseendpoint=' + encodeURIComponent(document.getElementById('baseendpoint').value);
+                window.location.href = url;
+            } 
+            function default_val(){
+                document.getElementById("accountid").value = 1732;
+                document.getElementById("propertyhref").value = 'https://dineshjnarayan.github.io/';
+                document.getElementById("pmid").value = 547186;
+                document.getElementById("baseendpoint").value = 'https://cdn.privacy-mgmt.com';
+            } 
+        </script>
 
         <!-- Second Parallax Image with Portfolio Text -->
         <div class="bgimg-2 w3-display-container w3-opacity-min">
@@ -638,7 +703,7 @@
                 <i class="fa fa-twitter w3-hover-opacity"></i>
                 <i class="fa fa-linkedin w3-hover-opacity"></i>
             </div>
-            <p>Edit <a onclick="window._sp_.gdpr.loadPrivacyManagerModal('547186', 'purposes')" href="javascript:void(0);" class="w3-hover-text-green">Privacy Settings</a></p>
+            <p>Edit <a onclick="window._sp_.gdpr.loadPrivacyManagerModal(box_pmid, 'purposes')" href="javascript:void(0);" class="w3-hover-text-green">Privacy Settings</a></p>
             <p>Powered by <a href="https://www.w3schools.com/w3css/default.asp" title="W3.CSS" target="_blank" class="w3-hover-text-green">w3.css</a></p>
         </footer>
         
