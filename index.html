@@ -104,14 +104,10 @@
             var vendors_cvc = [];
             var vpm_obj = [];
             var cvc_obj = [];
-            //accountId: 1423,
-            //propertyHref: "https://www.playpilot.com",
-            //pmid: 417982,
-            //baseendpoint:https://cmp.playpilot.com,
-            var box_accountid = 1732;
-            var box_propertyhref = 'https://dineshjnarayan.github.io/';
-            var box_pmid = 547186;
-            var box_baseendpoint = 'https://cdn.privacy-mgmt.com';
+            var url_accountid = 1732;
+            var url_propertyhref = 'https://dineshjnarayan.github.io/';
+            var url_pmid = 547186;
+            var url_baseendpoint = 'https://cdn.privacy-mgmt.com';
 
             function standard_two_cell_row(label, value, style, cell_append=false)    {
                 //Nearly all outputs from api calls will be displayed as rows with two cells each. One cell for the description, the second for the value
@@ -254,7 +250,7 @@
 
             function list_consented(tcdata_obj)  {
                 //TCF getTCData. Create a simple list from TCF data objects for publisher consents & legitimate interests, purpose_consents & legitimate interests, vendor consents & legitimate interests
-                //To avoid a very large list being shown only ids of purposes, vendors, publishers that have consent are listed
+                //To avoid a very large list being shown only ids of purposes, vendors, publishers that have consent = true are listed
                 //Called by show_tcdata
                 var list_consented = [];
                 var id_list = Object.keys(tcdata_obj);
@@ -264,6 +260,27 @@
                 }
                 var tr = standard_two_cell_row(list_consented.join(", "), null, null);
                 return(tr.outerHTML);
+            }
+
+            function parse_errorobject(error_obj) {
+                //Sourcepoint onError callback. Returns an errorObject which contains the stack trace recorded for this fault
+                //This function splits the text into a list, it is easier to follow the events leading to the fault.
+                //Called by onError
+                var stack_trace = (error_obj.stack).split("\n");
+                table = document.createElement('table');
+                var tr = standard_two_cell_row("message", error_obj.message, null); 
+                table.appendChild(tr);
+                var i = 0;
+                stack_trace.map(event => {
+                    style = null;
+                    if(i % 2 == 0) style = "background-color:#E4E4E4;";
+                    var para = document.createElement("p");
+                    para.style.textAlign = "justify";
+                    para.innerHTML = event;
+                    var tr = standard_two_cell_row(stack_trace.length - (i++), para, style, true);
+                    table.appendChild(tr);
+                });
+                return(table.outerHTML);
             }
 
             function output_table(table_name, cell_labels, cell_values)   {
@@ -295,31 +312,23 @@
             window._sp_queue = [];
 
             var url = new URL(window.location.href);
-            if(url.searchParams.get("accountid").length > 0) {
-                box_accountid = url.searchParams.get("accountid"); 
-            }
-            if(url.searchParams.get("propertyhref").length > 0) {
-                box_propertyhref = url.searchParams.get("propertyhref");
-            }
-            if(url.searchParams.get("pmid").length > 0) {
-                box_pmid = url.searchParams.get("pmid");   
-            }
-            if(url.searchParams.get("baseendpoint").length > 0) {
-                box_baseendpoint = url.searchParams.get("baseendpoint");   
-            }
+            if(url.searchParams.get("accountid").length > 0)            url_accountid = url.searchParams.get("accountid"); 
+            if(url.searchParams.get("propertyhref").length > 0)         url_propertyhref = url.searchParams.get("propertyhref");
+            if(url.searchParams.get("pmid").length > 0)                 url_pmid = url.searchParams.get("pmid");   
+            if(url.searchParams.get("baseendpoint").length > 0)         url_baseendpoint = url.searchParams.get("baseendpoint");
             window.onload = function() {
-                document.getElementById("accountid").value = box_accountid;
-                document.getElementById("propertyhref").value = box_propertyhref;
-                document.getElementById("pmid").value = box_pmid;
-                document.getElementById("baseendpoint").value = box_baseendpoint;
+                document.getElementById("accountid").value = url_accountid;
+                document.getElementById("propertyhref").value = url_propertyhref;
+                document.getElementById("pmid").value = url_pmid;
+                document.getElementById("baseendpoint").value = url_baseendpoint;
             }
             
             window._sp_ = {
                 
                 config: {
-                    accountId: box_accountid,
-                    propertyHref: box_propertyhref,
-                    baseEndpoint: box_baseendpoint,
+                    accountId: url_accountid,
+                    propertyHref: url_propertyhref,
+                    baseEndpoint: url_baseendpoint,
                     gdpr: { },
                     events: {
 
@@ -378,10 +387,10 @@
                         },
 
                         onError: function (message_type, errorCode, errorObject, userReset) {
-                            console.log('onError message_type >> ', message_type);
-                            console.log('onError errorCode >> ' + errorCode);
-                            console.log('onError errorObject >> ', errorObject);
-                            console.log('onError userReset >> ' + userReset);
+                            const cell_values = [message_type, errorCode, userReset, parse_errorobject(errorObject)];
+                            const cell_labels = ["message_type", "errorCode", "userReset", "errorObject"];
+                            output_table("onerror", cell_labels, cell_values);
+                            console.log('onError callback');
                         }
 
                     }
@@ -411,15 +420,14 @@
             }
 
             function show_tcdata(success, tcdata)   {
-                var publisher_consents = list_consented(tcdata.publisher.consents);
-                //var publisher_customPurpose_consents = create_selectoption(JSON.stringify(tcdata.publisher.customPurpose));
-                var publisher_legitimateinterests_consents = list_consented(tcdata.publisher.legitimateInterests);
-                //var publisher_restrictions = create_selectoption(JSON.stringify(tcdata.publisher.restrictions));
-                var purpose_consents = list_consented(tcdata.purpose.consents);
-                var purpose_legitimateInterests = list_consented(tcdata.purpose.legitimateInterests);
-                var vendor_consents = list_consented(tcdata.vendor.consents);
-                var vendor_legitimateInterests = list_consented(tcdata.vendor.legitimateInterests);
-                const cell_values = [success, tcdata.addtlConsent, tcdata.cmpId, tcdata.cmpStatus, tcdata.cmpVersion, tcdata.eventStatus, tcdata.gdprApplies, tcdata.isServiceSpecific, tcdata.listenerId, tcdata.publisherCC, tcdata.purposeOneTreatment, tcdata.tcString, tcdata.tcfPolicyVersion, tcdata.useNonStandardStacks, publisher_consents, JSON.stringify(tcdata.publisher.customPurpose), publisher_legitimateinterests_consents, JSON.stringify(tcdata.publisher.restrictions), purpose_consents, purpose_legitimateInterests, vendor_consents, vendor_legitimateInterests];
+                const cell_values = [   success, tcdata.addtlConsent, tcdata.cmpId, 
+                                        tcdata.cmpStatus, tcdata.cmpVersion, tcdata.eventStatus, 
+                                        tcdata.gdprApplies, tcdata.isServiceSpecific, tcdata.listenerId, 
+                                        tcdata.publisherCC, tcdata.purposeOneTreatment, tcdata.tcString, 
+                                        tcdata.tcfPolicyVersion, tcdata.useNonStandardStacks, list_consented(tcdata.publisher.consents), 
+                                        JSON.stringify(tcdata.publisher.customPurpose), list_consented(tcdata.publisher.legitimateInterests), JSON.stringify(tcdata.publisher.restrictions), 
+                                        list_consented(tcdata.purpose.consents), list_consented(tcdata.purpose.legitimateInterests), list_consented(tcdata.vendor.consents), 
+                                        list_consented(tcdata.vendor.legitimateInterests) ];
                 const cell_labels = ["success", "addtlConsent", "cmpId", "cmpStatus", "cmpVersion", "eventStatus", "gdprApplies", "isServiceSpecific", "listenerId", "publisherCC", "purposeOneTreatment", "tcString:", "tcfPolicyVersion", "useNonStandardStacks", "publisher:consents", "publisher:customPurpose", "publisher:legitimateInterests", "publisher:restrictions", "purpose:consents", "purpose:legitimateInterests", "vendor:consents", "vendor:legitimateInterests"];
                 output_table("tcfapi_gettcdata", cell_labels, cell_values);
             }
@@ -487,7 +495,7 @@
                 <a href="#sp_callbacks" class="w3-bar-item w3-button w3-hide-small"><i class="fa fa-user"></i> SOURCEPOINT CALLBACKS</a>
                 <a href="#tcf_apis" class="w3-bar-item w3-button w3-hide-small"><i class="fa fa-user"></i> TCF V2 APIS</a>
                 <!--<a href="#gdpr_standard" class="w3-bar-item w3-button w3-hide-small"><i class="fa fa-user"></i> GDPR STANDARD API</a>-->
-                <a onclick="window._sp_.gdpr.loadPrivacyManagerModal(box_pmid, 'purposes')" href="javascript:void(0);" class="w3-bar-item w3-button w3-hide-small"><i class="fa fa-th"></i> PRIVACY MANAGER</a>
+                <a onclick="window._sp_.gdpr.loadPrivacyManagerModal(url_pmid, 'purposes')" href="javascript:void(0);" class="w3-bar-item w3-button w3-hide-small"><i class="fa fa-th"></i> PRIVACY MANAGER</a>
                 <a href="#contact" class="w3-bar-item w3-button w3-hide-small"><i class="fa fa-envelope"></i> CONTACT</a>
                 <a href="#" class="w3-bar-item w3-button w3-hide-small w3-right w3-hover-red">
                     <i class="fa fa-search"></i>
@@ -512,67 +520,42 @@
         </div>
 
         <div class="w3-content w3-container w3-padding-64" id="intro">
-            <!--
-            <div class="w3-row">
-                <div class="w3-col m6 w3-center w3-padding-large">
-                    <p><b><i class="fa fa-user w3-margin-right"></i>My Name</b></p><br>
-                    <img src="https://www.w3schools.com/w3images/avatar_hat.jpg" class="w3-round w3-image w3-opacity w3-hover-opacity-off" alt="Photo of Me" width="500" height="333">
-                </div>
-                <div class="sourcepoint-inline-message" id="adblock_notify"><span></span></div>
-                    <div class="w3-col m6 w3-hide-small w3-padding-large">
-                        <form action="/action_page.php">
-                            <label for="fname">accoundId:</label>
-                            <input type="text" id="accountid" name="accountid"><br><br>
-                            <label for="lname">propertyHref:</label>
-                            <input type="text" id="propertyhref" name="propertyhref"><br><br>
-                            <label for="lname">pmId:</label>
-                            <input type="text" id="pmid" name="pmid"><br><br>
-                            <input type="submit" value="Submit">
-                        </form>
-                </div>
-            </div>
-            <p class="w3-large w3-center w3-padding-16">I'm really good at:</p>
-            -->
             <p class="w3-wide"><i class="fa fa-laptop"></i>accoundId</p>
             <div class="w3-light-grey">
-                <!-- <div class="w3-container w3-padding-small w3-dark-grey w3-center" style="width:90%">90%</div> -->
                 <input type="text" id="accountid" name="accountid" value="1732">
             </div>
             <p class="w3-wide"><i class="fa fa-laptop"></i>propertyHref</p>
             <div class="w3-light-grey">
-                <!-- <div class="w3-container w3-padding-small w3-dark-grey w3-center" style="width:85%">85%</div> -->
                 <input type="text" id="propertyhref" name="propertyhref" value="https://dineshjnarayan.github.io/">
             </div>
             <p class="w3-wide"><i class="fa fa-laptop"></i>pmId</p>
             <div class="w3-light-grey">
-                <!-- <div class="w3-container w3-padding-small w3-dark-grey w3-center" style="width:75%">75%</div> -->
                 <input type="text" id="pmid" name="pmid" value="547186">
             </div>
-
             <p class="w3-wide"><i class="fa fa-laptop"></i>baseEndpoint</p>
             <div class="w3-light-grey">
-                <!-- <div class="w3-container w3-padding-small w3-dark-grey w3-center" style="width:75%">75%</div> -->
                 <input type="text" id="baseendpoint" name="baseendpoint" value="https://cdn.privacy-mgmt.com">
             </div>
-
             <p class="w3-wide"><i class="fa fa-laptop"></i>Submit</p>
             <div class="w3-light-grey">
-                <!-- <div class="w3-container w3-padding-small w3-dark-grey w3-center" style="width:85%">85%</div> -->
                 <button onClick="refreshPage();">Submit</button><button onClick="default_val();">Default</button>
             </div>
         </div>
 
         <script>
+
             function refreshPage(){
                 var url = '?accountid=' + document.getElementById('accountid').value + '&propertyhref=' + encodeURIComponent(document.getElementById('propertyhref').value) + '&pmid=' + document.getElementById('pmid').value + '&baseendpoint=' + encodeURIComponent(document.getElementById('baseendpoint').value);
                 window.location.href = url;
             } 
+
             function default_val(){
                 document.getElementById("accountid").value = 1732;
                 document.getElementById("propertyhref").value = 'https://dineshjnarayan.github.io/';
                 document.getElementById("pmid").value = 547186;
                 document.getElementById("baseendpoint").value = 'https://cdn.privacy-mgmt.com';
             } 
+
         </script>
 
         <!-- Second Parallax Image with Portfolio Text -->
@@ -584,6 +567,11 @@
 
         <!-- Container (About Section) -->
         <div class="w3-content w3-container w3-padding-64" id="sp_callbacks">
+            <!-- OnError Output-->
+            <table class="d table-bordered" id="onerror">
+                <caption style="color: #FFFFFF; background-color: #E4E4E4;"><strong>OnError</strong></caption>
+            </table>
+            <hr>
             <!-- onMessageReady Output-->
             <table class="d table-bordered" id="onmessageready">
                 <caption style="color: #FFFFFF; background-color: #E4E4E4;"><strong>onMessageReady</strong></caption>
@@ -682,21 +670,7 @@
                         <i class="fa fa-phone fa-fw w3-hover-text-black w3-xlarge w3-margin-right"></i> Phone: +49 0176 81000369<br>
                         <i class="fa fa-envelope fa-fw w3-hover-text-black w3-xlarge w3-margin-right"></i> Email: dinesh@sourcepoint.com<br>
                     </div>
-                    <p>Buy me a cup of <i class="fa fa-coffee"></i>, or leave a note:</p>
-                    <form action="/action_page.php" target="_blank">
-                        <div class="w3-row-padding" style="margin:0 -16px 8px -16px">
-                            <div class="w3-half">
-                                <input class="w3-input w3-border" type="text" placeholder="Name" required name="Name">
-                            </div>
-                            <div class="w3-half">
-                                <input class="w3-input w3-border" type="text" placeholder="Email" required name="Email">
-                            </div>
-                        </div>
-                        <input class="w3-input w3-border" type="text" placeholder="Message" required name="Message">
-                        <button class="w3-button w3-black w3-right w3-section" type="submit">
-                            <i class="fa fa-paper-plane"></i> SEND MESSAGE
-                        </button>
-                    </form>
+                    <p>I ♥ <i class="fa fa-coffee"></i></p>
                 </div>
             </div>
         </div>
@@ -712,7 +686,7 @@
                 <i class="fa fa-twitter w3-hover-opacity"></i>
                 <i class="fa fa-linkedin w3-hover-opacity"></i>
             </div>
-            <p>Edit <a onclick="window._sp_.gdpr.loadPrivacyManagerModal(box_pmid, 'purposes')" href="javascript:void(0);" class="w3-hover-text-green">Privacy Settings</a></p>
+            <p>Edit <a onclick="window._sp_.gdpr.loadPrivacyManagerModal(url_pmid, 'purposes')" href="javascript:void(0);" class="w3-hover-text-green">Privacy Settings</a></p>
             <p>Powered by <a href="https://www.w3schools.com/w3css/default.asp" title="W3.CSS" target="_blank" class="w3-hover-text-green">w3.css</a></p>
         </footer>
         
