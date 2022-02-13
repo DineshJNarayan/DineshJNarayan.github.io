@@ -87,46 +87,6 @@
         .w3-wide {letter-spacing: 10px;}
         .w3-hover-opacity {cursor: pointer;}
 
-
-.tooltip {
-  position: relative;
-  display: inline-block;
-  border-bottom: 1px dotted black;
-}
-
-.tooltip .tooltiptext {
-  visibility: hidden;
-  width: 120px;
-  background-color: #555;
-  color: #fff;
-  text-align: center;
-  border-radius: 6px;
-  padding: 5px 0;
-  position: absolute;
-  z-index: 1;
-  bottom: 125%;
-  left: 50%;
-  margin-left: -60px;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-
-.tooltip .tooltiptext::after {
-  content: "";
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  margin-left: -5px;
-  border-width: 5px;
-  border-style: solid;
-  border-color: #555 transparent transparent transparent;
-}
-
-.tooltip:hover .tooltiptext {
-  visibility: visible;
-  opacity: 1;
-}
-
     </style>
 
     <body>
@@ -144,6 +104,7 @@
             var vpm_obj = [];
             var cvc_obj = [];
             var tc_pr_obj = [];
+            var url_tcf = true;
             var url_accountid = 1732;
             var url_propertyhref = 'https://dineshjnarayan.github.io/';
             var url_pmid = 547186;
@@ -399,11 +360,15 @@
             if(url.searchParams.get("propertyhref").length > 0)         url_propertyhref = url.searchParams.get("propertyhref");
             if(url.searchParams.get("pmid").length > 0)                 url_pmid = url.searchParams.get("pmid");   
             if(url.searchParams.get("baseendpoint").length > 0)         url_baseendpoint = url.searchParams.get("baseendpoint");
+            if(url.searchParams.get("nontcf") == "true")                  url_tcf = false;
+
             window.onload = function() {
                 document.getElementById("accountid").value = url_accountid;
                 document.getElementById("propertyhref").value = url_propertyhref;
                 document.getElementById("pmid").value = url_pmid;
                 document.getElementById("baseendpoint").value = url_baseendpoint;
+                document.getElementById("nontcf").checked = false;
+                if(url.searchParams.get("nontcf") == "true") document.getElementById("nontcf").checked = true;
             }
             
             window._sp_ = {
@@ -412,7 +377,7 @@
                     accountId: url_accountid,
                     propertyHref: url_propertyhref,
                     baseEndpoint: url_baseendpoint,
-                    gdpr: { },
+                    gdpr: { includeTcfApi: url_tcf },
                     events: {
 
                         onMessageReady: function (message_type) {
@@ -437,8 +402,8 @@
                         },
                     
                         onMessageChoiceError: function (message_type, err) {
-                            const cell_values = [message_type, JSON.stringify(err)];
-                            const cell_labels = ["message_type", "err"];
+                            const cell_values = [message_type, err.message, err.name, err.code, err.metricCode, err.statusCode, err.URL, JSON.stringify(err)];
+                            const cell_labels = ["message_type", "message", "name", "code", "metricCode", "statusCode", "URL", "err"];
                             output_table("onmessagechoiceerror", cell_labels, cell_values);
                             console.log('onMessageChoiceError callback');
                         },
@@ -446,6 +411,14 @@
                         onConsentReady: function (message_type, consentUUID, euconsent) {
                             const cell_values = [message_type, consentUUID, euconsent];
                             const cell_labels = ["message_type", "consentUUID", "euconsent"];
+                                if(window._sp_.config.gdpr.includeTcfApi != false)    {
+                                    var nonTCFbtn = document.getElementById("nontcf_getvendorpurposemapping_btn");
+                                    nonTCFbtn.innerHTML = "disabled - only for non-TCF implementations";
+                                    nonTCFbtn.disabled = true;
+                                    var nonTCFbtn = document.getElementById("nontcf_getcustomvendorconsents_btn");
+                                    nonTCFbtn.innerHTML = "disabled - only for non-TCF implementations"
+                                    nonTCFbtn.disabled = true;
+                                }
                             output_table("onconsentready", cell_labels, cell_values);
                             console.log('onConsentReady callback');
                         },
@@ -479,8 +452,7 @@
                         }
 
                     }
-                }
-                
+                }  
             }
         
             function show_ping(pingReturn)    {
@@ -489,19 +461,19 @@
                 output_table("callping", cell_labels, cell_values);
             }
 
-            function show_vendorpurposemapping(success, vpm)    {
+            function show_vendorpurposemapping(table_name, success, vpm)    {
                 vpm_obj = vpm;
                 vendors_vpm = [];
                 const cell_values = [success, vpm_mapping(vpm_obj)];
                 const cell_labels = ["success", "vendor purpose mapping"];
-                output_table("getvendorpurposemapping_table", cell_labels, cell_values);
+                output_table(table_name, cell_labels, cell_values);
             }
 
-            function show_getcustomvendorconsents(success, cvc)    {
+            function show_getcustomvendorconsents(table_name, success, cvc)    {
                 cvc_obj = cvc;
                 const cell_values = [success, cvc.newUser, cvc.dateCreated, table_consentedpurposes(cvc.consentedPurposes), table_consentedvendors(cvc.consentedVendors), cvc_grants(cvc.grants), table_consentedpurposes(cvc.legIntPurposes)];
                 const cell_labels = ["success", "newUser", "dateCreated", "consentedPurposes", "consentedVendors", "grants", "legIntPurposes"];
-                output_table("getcustomvendorconsents", cell_labels, cell_values);
+                output_table(table_name, cell_labels, cell_values);
             }
 
             function show_tcdata(success, tcdata)   {
@@ -519,14 +491,13 @@
             }
 
             __tcfapi('addEventListener', 2, function(tcdata, success) {
-                // to generate error change tcdata -> tcData >> next documentation
                 if(success) {
                     __tcfapi('ping', 2, (pingReturn) => {
                         show_ping(pingReturn);
                         console.log('addEventListener('+tcdata.listenerId+') calling ping');
                     });
                     __tcfapi('getCustomVendorConsents', 2, function(cvc, success) { 
-                        show_getcustomvendorconsents(success, cvc);
+                        show_getcustomvendorconsents("getcustomvendorconsents", success, cvc);
                         console.log('addEventListener('+tcdata.listenerId+') calling getCustomVendorConsents'); 
                     });
                     if (tcdata.eventStatus === 'useractioncomplete') {
@@ -542,7 +513,7 @@
             });
 
             __tcfapi('getVendorPurposeMapping', 2, function(vpm, success) {
-                show_vendorpurposemapping(success, vpm);
+                show_vendorpurposemapping("getvendorpurposemapping_table", success, vpm);
                 console.log("getVendorPurposeMapping called on page load")
             });
 
@@ -580,7 +551,7 @@
                 <a href="#home" class="w3-bar-item w3-button">HOME</a>
                 <a href="#sp_callbacks" class="w3-bar-item w3-button w3-hide-small"><i class="fa fa-user"></i> SOURCEPOINT CALLBACKS</a>
                 <a href="#tcf_apis" class="w3-bar-item w3-button w3-hide-small"><i class="fa fa-user"></i> TCF V2 APIS</a>
-                <!--<a href="#gdpr_standard" class="w3-bar-item w3-button w3-hide-small"><i class="fa fa-user"></i> GDPR STANDARD API</a>-->
+                !--<a href="#gdpr_standard" class="w3-bar-item w3-button w3-hide-small"><i class="fa fa-user"></i> GDPR STANDARD API</a>
                 <a onclick="window._sp_.gdpr.loadPrivacyManagerModal(url_pmid, 'purposes')" href="javascript:void(0);" class="w3-bar-item w3-button w3-hide-small"><i class="fa fa-th"></i> PRIVACY MANAGER</a>
                 <a href="#contact" class="w3-bar-item w3-button w3-hide-small"><i class="fa fa-envelope"></i> CONTACT</a>
                 <a href="#" class="w3-bar-item w3-button w3-hide-small w3-right w3-hover-red">
@@ -591,7 +562,7 @@
             <div id="navDemo" class="w3-bar-block w3-white w3-hide w3-hide-large w3-hide-medium">
                 <a href="#sp_callbacks" class="w3-bar-item w3-button" onclick="toggleFunction()">SOURCEPOINT CALLBACKS</a>
                 <a href="#tcf_apis" class="w3-bar-item w3-button w3-hide-small"><i class="fa fa-user"></i> TCF V2 APIS</a>
-                <!--<a href="#gdpr_standard" class="w3-bar-item w3-button w3-hide-small"><i class="fa fa-user"></i> GDPR STANDARD API</a>-->
+                <a href="#gdpr_standard" class="w3-bar-item w3-button w3-hide-small"><i class="fa fa-user"></i> GDPR STANDARD API</a>
                 <a onclick="window._sp_.gdpr.loadPrivacyManagerModal('547186', 'purposes')" href="javascript:void(0);" class="w3-bar-item w3-button w3-hide-small"><i class="fa fa-th"></i>PRIVACY MANAGER</a>
                 <a href="#contact" class="w3-bar-item w3-button" onclick="toggleFunction()">CONTACT</a>
                 <a href="#" class="w3-bar-item w3-button">SEARCH</a>
@@ -618,16 +589,22 @@
             <div class="w3-light-grey">
                 <input type="text" id="baseendpoint" name="baseendpoint" value="https://cdn.privacy-mgmt.com">
             </div>
+            <p class="w3-wide"><i class="fa fa-laptop"></i>non-TCF</p>
+            <div class="w3-light-grey">
+                <input type="checkbox" id="nontcf" checked="false">
+            </div>
             <p class="w3-wide"><i class="fa fa-laptop"></i>Submit</p>
             <div class="w3-light-grey">
-                <button onClick="refreshPage();">Submit</button><button onClick="default_val();">Default</button><button onClick="testing_val();">Testing ...</button>
+                <button onClick="window.refreshPage();">Submit</button><button onClick="default_val();">Default</button><button onClick="testing_val();">Testing ...</button>
             </div>
         </div>
 
         <script>
 
             function refreshPage(){
-                var url = '?accountid=' + document.getElementById('accountid').value + '&propertyhref=' + encodeURIComponent(document.getElementById('propertyhref').value) + '&pmid=' + document.getElementById('pmid').value + '&baseendpoint=' + encodeURIComponent(document.getElementById('baseendpoint').value);
+                var nontcf_flag = "true";
+                if(document.getElementById('nontcf').checked == false) nontcf_flag = "false";
+                var url = '?accountid=' + document.getElementById('accountid').value + '&propertyhref=' + encodeURIComponent(document.getElementById('propertyhref').value) + '&pmid=' + document.getElementById('pmid').value + '&baseendpoint=' + encodeURIComponent(document.getElementById('baseendpoint').value) + '&nontcf=' + nontcf_flag;
                 window.location.href = url;
             } 
 
@@ -636,6 +613,7 @@
                 document.getElementById("propertyhref").value = 'https://dineshjnarayan.github.io/';
                 document.getElementById("pmid").value = 547186;
                 document.getElementById("baseendpoint").value = 'https://cdn.privacy-mgmt.com';
+                document.getElementById("nontcf").checked = false;
             }
 
             function testing_val(){
@@ -643,6 +621,7 @@
                 document.getElementById("propertyhref").value = 'https://www.playpilot.com';
                 document.getElementById("pmid").value = 417982;
                 document.getElementById("baseendpoint").value = 'https://cmp.playpilot.com';
+                document.getElementById("nontcf").checked = false;
             }
 
         </script>
@@ -738,11 +717,37 @@
         </div>
 
         <!-- Second Parallax Image with Portfolio Text -->
-        <!--<div class="bgimg-2 w3-display-container w3-opacity-min">
+        <div class="bgimg-2 w3-display-container w3-opacity-min">
             <div class="w3-display-middle">
                 <span class="w3-xxlarge w3-text-white w3-wide">GDPR STANDARD API</span>
             </div>
-        </div>-->
+        </div>
+
+        <div class="w3-content w3-container w3-padding-64" id="gdpr_standard">
+            <!-- getVendorPurposeMapping Output - GDPR Standard -->
+            <p class="w3-wide"><i class="fa fa-laptop"></i>getVendorPurposeMapping</p>
+            <div class="w3-light-grey">
+                <button id="nontcf_getvendorpurposemapping_btn" onClick="window._sp_.gdpr.getVendorPurposeMapping((data, success) => { 
+                    show_vendorpurposemapping('nontcf_getvendorpurposemapping_table', success, data) 
+                });">Click here</button>
+            </div>
+            <p class="w3-wide"></p>
+            <table class="d table-bordered" id="nontcf_getvendorpurposemapping_table">
+                <caption style="color: #FFFFFF; background-color: #E4E4E4;"><strong><code>window._sp_.gdpr.getVendorPurposeMapping((data, success) => { console.log(data,success); });</code></strong></caption>
+            </table>
+            <hr>
+            <!-- getCustomVendorConsents Output - GDPR Standard -->
+            <p class="w3-wide"><i class="fa fa-laptop"></i>getCustomVendorConsents</p>
+            <div class="w3-light-grey">
+                <button id="nontcf_getcustomvendorconsents_btn" onClick="window._sp_.gdpr.getCustomVendorConsents((data, success) => {
+                    show_getcustomvendorconsents('nontcf_getcustomvendorconsents_table', success, data)
+                });">Click here</button>
+            </div>
+            <p class="w3-wide"></p>
+             <table class="d table-bordered" id="nontcf_getcustomvendorconsents_table">
+                <caption style="color: #FFFFFF; background-color: #E4E4E4;"><strong><code>window._sp_.gdpr.getCustomVendorConsents((vendorConsents, success) => { console.log(vendorConsents); });</code></strong></caption>
+            </table>
+        </div>
         
         <!-- Third Parallax Image with Portfolio Text -->
         <div class="bgimg-3 w3-display-container w3-opacity-min">
