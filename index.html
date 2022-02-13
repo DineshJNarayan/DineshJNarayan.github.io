@@ -105,10 +105,10 @@
             var cvc_obj = [];
             var tc_pr_obj = [];
             var url_tcf = true;
-            var url_accountid = 1732;
-            var url_propertyhref = 'https://dineshjnarayan.github.io/';
-            var url_pmid = 547186;
-            var url_baseendpoint = 'https://cdn.privacy-mgmt.com';
+            //var url_accountid = 1732;
+            //var url_propertyhref = 'https://dineshjnarayan.github.io/';
+            //var url_pmid = 547186;
+            //var url_baseendpoint = 'https://cdn.privacy-mgmt.com';
 
             function standard_two_cell_row(label, value, style = null, cell_append=false)    {
                 //Some outputs from api calls will be displayed as rows with two cells each. One cell for the description, the second for the value
@@ -148,6 +148,8 @@
                 if(consentedvendors.length < 1)    { return('no data'); }
                 var table = document.createElement('table');
                 table.style = "width: 100%;";
+                var span_data = document.getElementById("custom_vendors_counter");
+                span_data.innerHTML = consentedvendors.length;
                 consentedvendors.map(vendor => {
                     var tr = table.insertRow(0)
                     var td = tr.insertCell(0);
@@ -272,6 +274,9 @@
             }
 
             function show_publisher_restrictions(purpose_id)    {
+                //TCF getTCData. For each purpose id show the vendors with publisher restrictions that are declared consent, legitimate interest or not allowed 
+                //This function sorts the information by legal basis from object tc_pr_obj. Output to regular format table, two cells per row 
+                //Called by show_tcdata -> parse_publisherrestrictions
                 var restrictions = Object.values(tc_pr_obj);
                 var restriction = restrictions[purpose_id];
                 var vendor_ids = Object.keys(restriction);
@@ -297,6 +302,9 @@
             }
 
             function parse_publisherrestrictions(tc_pr_obj)  {
+                //TCF getTCData. For each purpose id list the vendors with publisher restrictions that are declared consent, legitimate interest or not allowed
+                //This function creates a list of purpose ids for a drop down list
+                //Called by show_tcdata
                 var purpose_list = Object.keys(tc_pr_obj);
                 if(purpose_list.length < 1)    return('no data');
                 var table = document.createElement('table');
@@ -711,8 +719,11 @@
         </div>
 
         <div class="w3-row w3-center w3-dark-grey w3-padding-16">
-            <div class="w3-section">
+            <div class="w3-quarter w3-section">
                 <span class="w3-xlarge" id="vendors_counter"></span><br>Vendors
+            </div>
+            <div class="w3-quarter w3-section">
+                <span class="w3-xlarge" id="custom_vendors_counter"></span><br>Custom vendors
             </div>
         </div>
 
