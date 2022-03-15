@@ -41,7 +41,7 @@
                   "stageCampaign": false
                },
                "geoOverride": {
-                  "eea": {
+                  "ccpa": {
                      "consentRequired": "remote",
                      "checkConsentHref": "https://cdn.privacy-mgmt.com/ccpa/consent/amp",                    
                      "postPromptUI": "ccpa-consent-ui",
@@ -56,7 +56,7 @@
                         "targetingParams": {    "color": "blue"  }
                      }
                   },
-                  "ccpa": {
+                  "eea": {
                      "consentRequired": "remote",
                      "checkConsentHref": "https://cdn.privacy-mgmt.com/wrapper/tcfv2/v1/amp-v2?authId=CLIENT_ID",                     
                      "mmsDomain": "https://cdn.privacy-mgmt.com",
@@ -78,15 +78,13 @@
             }
          </script>
       </amp-consent>
-      
+      <!--
       <div id="ccpa-consent-ui">
          <button on="tap:consent.prompt(consent=SourcePoint)">Do Not Sell My Info</button>
       </div>
-      
-      <!--
+      -->
       <div id="eea-consent-ui">
          <button on="tap:consent.prompt(consent=SourcePoint)">Privacy Settings</button>
       </div>
-      -->
    </body>
 </html>
