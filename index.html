@@ -15,33 +15,28 @@
             ccpa: {  },
             gdpr: { includeTcfApi: true },
             events: {
-               onMessageReady: function (message_type) {
-                  console.log(' ');
-                  console.log('[event] onMessageReady', arguments);
+               onMessageReady: function () {
+                  //console.log('[event] onMessageReady', arguments);
                   console.log('onMessageReady - gdpr/ccpa - ' + arguments[0] );
                },
-               onMessageChoiceSelect: function (message_type, choice_id, choice_type_id) {
-                  console.log(' ');
-                  console.log('[event] onMessageChoiceSelect', arguments);
+               onMessageChoiceSelect: function () {
+                  //console.log('[event] onMessageChoiceSelect', arguments);
                   console.log('onMessageChoiceSelect - gdpr/ccpa - ' + arguments[0] );
                   console.log('onMessageChoiceSelect - choice id - ' + arguments[1] );
                   console.log('onMessageChoiceSelect - choice type id - ' + arguments[2] );
                },
                onPrivacyManagerAction: function (message_type, pmData) {
-                  console.log(' ');
-                  console.log('[event] onPrivacyManagerAction', arguments);
+                  //console.log('[event] onPrivacyManagerAction', arguments);
                   console.log('onPrivacyManagerAction - gdpr/ccpa - ' + arguments[0] );
                   console.log('onPrivacyManagerAction - purposeConsent - ' + arguments[1].purposeConsent );
                   console.log('onPrivacyManagerAction - vendorConsent - ' + arguments[1].vendorConsent );
                   console.log('onPrivacyManagerAction - vendorList - ' + arguments[1].vendorList );
                },
                onMessageChoiceError: function (message_type, err) {
-                  console.log(' ');
-                  console.log('[event] onMessageChoiceError', arguments);
+                  //console.log('[event] onMessageChoiceError', arguments);
                },
                onConsentReady: function (message_type, consentUUID, euconsent) {
-                  console.log(' ');
-                  console.log('[event] onConsentReady', arguments);
+                  //console.log('[event] onConsentReady', arguments);
                   console.log('onConsentReady - gdpr/ccpa - ' + arguments[0] );
                   console.log('onConsentReady - consentUUID - ' + arguments[1] );
                   console.log('onConsentReady - euconsent - ' + arguments[2] );
@@ -50,39 +45,23 @@
                   console.log('onConsentReady - consentedToAll - ' + arguments[3].consentedToAll );
                },
                onPMCancel: function (message_type) {
-                  console.log(' ');
-                  console.log('[event] onPMCancel', arguments);
+                  //console.log('[event] onPMCancel', arguments);
                   console.log('onPMCancel - gdpr/ccpa - ' + arguments[0] );
                },
                onMessageReceiveData: function (message_type, data) {
-                  console.log(' ');
-                  console.log('[event] onMessageReceiveData', arguments);
+                  //console.log('[event] onMessageReceiveData', arguments);
                   console.log('onMessageReceiveData - gdpr/ccpa - ' + arguments[0] );
                   console.log('onMessageReceiveData - messageId - ' + arguments[1].messageId );
                },
                onSPPMObjectReady: function () {
-                  console.log(' ');
-                  console.log('[event] onSPPMObjectReady', arguments);
+                  //console.log('[event] onSPPMObjectReady', arguments);
                },
                onError: function (message_type, errorCode, errorObject, userReset) {
-                  console.log(' ');
-                  console.log('[event] onError', arguments);
+                  //console.log('[event] onError', arguments);
                }
             }
          }
       }
-
-      __tcfapi('addEventListener', 2, function(tcdata, success) {
-         if(success) {
-            if (tcdata.eventStatus === 'useractioncomplete') {
-               // call code when user has made an action
-            } else if (tcdata.eventStatus === 'tcloaded') {
-               // call code when consent string has loaded
-            } else if (tcdata.eventStatus === 'cmpuishown') {
-               // call code when cmp message is shown
-            }
-         }
-      });
 
    </script>
    <script src="https://cdn.privacy-mgmt.com/unified/wrapperMessagingWithoutDetection.js" async=""></script>
