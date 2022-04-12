@@ -1,79 +1,88 @@
-<html>
-   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
-   <script>
-      !function(t){var e={};function n(r){if(e[r])return e[r].exports;var o=e[r]={i:r,l:!1,exports:{}};return t[r].call(o.exports,o,o.exports,n),o.l=!0,o.exports}n.m=t,n.c=e,n.d=function(t,e,r){n.o(t,e)||Object.defineProperty(t,e,{enumerable:!0,get:r})},n.r=function(t){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(t,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(t,"__esModule",{value:!0})},n.t=function(t,e){if(1&e&&(t=n(t)),8&e)return t;if(4&e&&"object"==typeof t&&t&&t.__esModule)return t;var r=Object.create(null);if(n.r(r),Object.defineProperty(r,"default",{enumerable:!0,value:t}),2&e&&"string"!=typeof t)for(var o in t)n.d(r,o,function(e){return t[e]}.bind(null,o));return r},n.n=function(t){var e=t&&t.__esModule?function(){return t.default}:function(){return t};return n.d(e,"a",e),e},n.o=function(t,e){return Object.prototype.hasOwnProperty.call(t,e)},n.p="",n(n.s=3)}([function(t,e,n){var r=n(2);t.exports=!r((function(){return 7!=Object.defineProperty({},"a",{get:function(){return 7}}).a}))},function(t,e){t.exports=function(t){return"object"==typeof t?null!==t:"function"==typeof t}},function(t,e){t.exports=function(t){try{return!!t()}catch(t){return!0}}},function(t,e,n){n(4),function(){if("function"!=typeof window.__tcfapi){var t,e=[],n=window,r=n.document;!n.__tcfapi&&function t(){var e=!!n.frames.__tcfapiLocator;if(!e)if(r.body){var o=r.createElement("iframe");o.style.cssText="display:none",o.name="__tcfapiLocator",r.body.appendChild(o)}else setTimeout(t,5);return!e}()&&(n.__tcfapi=function(){for(var n=arguments.length,r=new Array(n),o=0;o<n;o++)r[o]=arguments[o];if(!r.length)return e;if("setGdprApplies"===r[0])r.length>3&&2===parseInt(r[1],10)&&"boolean"==typeof r[3]&&(t=r[3],"function"==typeof r[2]&&r[2]("set",!0));else if("ping"===r[0]){var i={gdprApplies:t,cmpLoaded:!1,apiVersion:"2.0"};"function"==typeof r[2]&&r[2](i,!0)}else e.push(r)},n.addEventListener("message",(function(t){var e="string"==typeof t.data,r={};try{r=e?JSON.parse(t.data):t.data}catch(t){}var o=r.__tcfapiCall;o&&n.__tcfapi(o.command,o.parameter,o.version,(function(n,r){var i={__tcfapiReturn:{returnValue:n,success:r,callId:o.callId}};e&&(i=JSON.stringify(i)),t.source.postMessage(i,"*")}))}),!1))}}()},function(t,e,n){var r=n(0),o=n(5).f,i=Function.prototype,c=i.toString,u=/^s*function ([^ (]*)/;r&&!("name"in i)&&o(i,"name",{configurable:!0,get:function(){try{return c.call(this).match(u)[1]}catch(t){return""}}})},function(t,e,n){var r=n(0),o=n(6),i=n(10),c=n(11),u=Object.defineProperty;e.f=r?u:function(t,e,n){if(i(t),e=c(e,!0),i(n),o)try{return u(t,e,n)}catch(t){}if("get"in n||"set"in n)throw TypeError("Accessors not supported");return"value"in n&&(t[e]=n.value),t}},function(t,e,n){var r=n(0),o=n(2),i=n(7);t.exports=!r&&!o((function(){return 7!=Object.defineProperty(i("div"),"a",{get:function(){return 7}}).a}))},function(t,e,n){var r=n(8),o=n(1),i=r.document,c=o(i)&&o(i.createElement);t.exports=function(t){return c?i.createElement(t):{}}},function(t,e,n){(function(e){var n=function(t){return t&&t.Math==Math&&t};t.exports=n("object"==typeof globalThis&&globalThis)||n("object"==typeof window&&window)||n("object"==typeof self&&self)||n("object"==typeof e&&e)||Function("return this")()}).call(this,n(9))},function(t,e){var n;n=function(){return this}();try{n=n||new Function("return this")()}catch(t){"object"==typeof window&&(n=window)}t.exports=n},function(t,e,n){var r=n(1);t.exports=function(t){if(!r(t))throw TypeError(String(t)+" is not an object");return t}},function(t,e,n){var r=n(1);t.exports=function(t,e){if(!r(t))return t;var n,o;if(e&&"function"==typeof(n=t.toString)&&!r(o=n.call(t)))return o;if("function"==typeof(n=t.valueOf)&&!r(o=n.call(t)))return o;if(!e&&"function"==typeof(n=t.toString)&&!r(o=n.call(t)))return o;throw TypeError("Can't convert object to primitive value")}}]);
-   </script>
-   <script>
-
-      window._sp_queue = [];
-      window._sp_ = {
-         config: {
-            accountId: 1732,
-            propertyHref: 'https://www.visitdenmark.com/',
-            baseEndpoint: 'https://cdn.privacy-mgmt.com',
-            ccpa: {  },
-            gdpr: { includeTcfApi: true },
-            targetingParams:{            
-               subscribed: 'false'          
-            },
-            events: {
-               onMessageReady: function () {
-                  console.log('[event] onMessageReady', arguments);
-                  console.log('onMessageReady - gdpr/ccpa - ' + arguments[0] );
+<!doctype html>
+<html amp lang="en">
+   <head>
+      <meta charset="utf-8">
+      <title>Hello AMPs</title>
+      <script async src="https://cdn.ampproject.org/v0.js"></script>
+      <!-- required for the amp-consent component -->
+      <script async custom-element="amp-consent" src="https://cdn.ampproject.org/v0/amp-consent-0.1.js"></script>
+      <!-- required for geo-targeting -->
+      <script async custom-element="amp-geo" src="https://cdn.ampproject.org/v0/amp-geo-0.1.js"></script>
+      <!-- required to sync auth_id with publishers domain and Google.com domain -->
+      <script async custom-element="amp-analytics" src="https://cdn.ampproject.org/v0/amp-analytics-0.1.js"></script>
+   </head>
+   <body>
+      <h1>Welcome to the mobile web CCPA & GDPR</h1>  
+      <amp-analytics type="googleanalytics">
+         <script type=application/json> 
+            {
+               "linkers": {
+                  "authId": {
+                     "ids": {
+                        "_a":"CLIENT_ID(AMP-CONSENT)"
+                     },
+                     "enabled":true,
+                     "proxyOnly":false
+                  }
                },
-               onMessageChoiceSelect: function () {
-                  console.log('[event] onMessageChoiceSelect', arguments);
-                  console.log('onMessageChoiceSelect - gdpr/ccpa - ' + arguments[0] );
-                  console.log('onMessageChoiceSelect - choice id - ' + arguments[1] );
-                  console.log('onMessageChoiceSelect - choice type id - ' + arguments[2] );
-               },
-               onPrivacyManagerAction: function (message_type, pmData) {
-                  console.log('[event] onPrivacyManagerAction', arguments);
-                  console.log('onPrivacyManagerAction - gdpr/ccpa - ' + arguments[0] );
-                  console.log('onPrivacyManagerAction - purposeConsent - ' + arguments[1].purposeConsent );
-                  console.log('onPrivacyManagerAction - vendorConsent - ' + arguments[1].vendorConsent );
-                  console.log('onPrivacyManagerAction - vendorList - ' + arguments[1].vendorList );
-               },
-               onMessageChoiceError: function (message_type, err) {
-                  //console.log('[event] onMessageChoiceError', arguments);
-               },
-               onConsentReady: function (message_type, consentUUID, euconsent) {
-                  console.log('[event] onConsentReady', arguments);
-                  console.log('onConsentReady - gdpr/ccpa - ' + arguments[0] );
-                  console.log('onConsentReady - consentUUID - ' + arguments[1] );
-                  console.log('onConsentReady - euconsent - ' + arguments[2] );
-                  console.log('onConsentReady - addtlConsent - ' + arguments[3].addtlConsent );
-                  console.log('onConsentReady - applies - ' + arguments[3].applies );
-                  console.log('onConsentReady - consentedToAll - ' + arguments[3].consentedToAll );
-                  //document.cookie = "authId=" + Date.now();
-                  //document.cookie = "authId=164857685835722";
-               },
-               onPMCancel: function (message_type) {
-                  console.log('[event] onPMCancel', arguments);
-                  console.log('onPMCancel - gdpr/ccpa - ' + arguments[0] );
-               },
-               onMessageReceiveData: function (message_type, data) {
-                  console.log('[event] onMessageReceiveData', arguments);
-                  console.log('onMessageReceiveData - gdpr/ccpa - ' + arguments[0] );
-                  console.log('onMessageReceiveData - messageId - ' + arguments[1].messageId );
-               },
-               onSPPMObjectReady: function () {
-                  console.log('[event] onSPPMObjectReady', arguments);
-               },
-               onError: function (message_type, errorCode, errorObject, userReset) {
-                  console.log('[event] onError', arguments);
+               "cookies": {
+                  "enabled":true,
+                  "authId": { 
+                     "value":"LINKER_PARAM(authId, _a)"
+                  }
                }
             }
-         }
-      }
-
-   </script>
-   <script src="https://cdn.privacy-mgmt.com/unified/wrapperMessagingWithoutDetection.js" async=""></script>
-
-   <!-- Set the link for privacy manager here -->
-   <footer>
-      <p>Edit <a onclick="window._sp_.gdpr.loadPrivacyManagerModal(547186, 'purposes')" href="javascript:void(0);">Privacy Settings</a></p>
-   </footer>
-
+         </script>
+      </amp-analytics>
+      <amp-geo layout="nodisplay">
+         <script type="application/json">
+            {
+               "ISOCountryGroups": {
+                  "eea": ["preset-eea", "unknown"],
+                  "us": ["us"]
+               }
+            }
+         </script>
+      </amp-geo>
+      <amp-consent id='consent' layout='nodisplay' type='SourcePoint'>
+         <script type="application/json">
+            {
+               "consentRequired": false,
+               "consentInstanceId": "sourcepoint",
+               "promptUISrc": "https://cdn.privacy-mgmt.com/amp/unified/index.html?authId=CLIENT_ID&source_url=SOURCE_URL",
+               "clientConfig": {
+                  "accountId": 1732,
+                  "propertyHref": "https://amp.newscriptdemo.com",
+                  "stageCampaign": false
+               },
+               "geoOverride": {
+                  "eea": {
+                     "consentRequired": "remote",
+                     "checkConsentHref": "https://sp-cdn.sp-demo.com/wrapper/tcfv2/v1/amp-v2?authId=CLIENT_ID",                                          
+                     "postPromptUI": "eea-consent-ui",
+                     "clientConfig": {                        
+                        "privacyManagerId": 547514,                       
+                        "pmTab": "purposes"                        
+                     }
+                  },
+                  "us": {
+                     "consentRequired": "remote",
+                     "checkConsentHref": "https://cdn.privacy-mgmt.com/wrapper/ccpa/amp-v2?authId=CLIENT_ID",
+                     "postPromptUI": "us-consent-ui",
+                     "clientConfig": {
+                        "isCCPA": true,
+                        "privacyManagerId": 548950
+                     }
+                  }
+               }
+            }
+         </script>
+      </amp-consent>
+      <div id="us-consent-ui">
+         <button on="tap:consent.prompt(consent=SourcePoint)">Do Not Sell My Info</button>
+      </div>
+      <div id="eea-consent-ui">
+         <button on="tap:consent.prompt(consent=SourcePoint)">Privacy Settings</button>
+      </div>
+   </body>
 </html>
