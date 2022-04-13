@@ -58,8 +58,8 @@
                "geoOverride": {
                   "eea": {
                      "consentRequired": "remote",
-                     "checkConsentHref": "https://sp-cdn.sp-demo.com/wrapper/tcfv2/v1/amp-v2?authId=CLIENT_ID",                                          
-                     "postPromptUI": "eea-consent-ui",
+                     "checkConsentHref": "https://cdn.privacy-mgmt.com/wrapper/tcfv2/v1/amp-v2?authId=CLIENT_ID",                                          
+                     "postPromptUI": "consent-ui",
                      "clientConfig": {                        
                         "privacyManagerId": 547514,                       
                         "pmTab": "purposes"                        
@@ -68,7 +68,7 @@
                   "us": {
                      "consentRequired": "remote",
                      "checkConsentHref": "https://cdn.privacy-mgmt.com/wrapper/ccpa/amp-v2?authId=CLIENT_ID",
-                     "postPromptUI": "us-consent-ui",
+                     "postPromptUI": "consent-ui",
                      "clientConfig": {
                         "isCCPA": true,
                         "privacyManagerId": 548950
@@ -78,10 +78,7 @@
             }
          </script>
       </amp-consent>
-      <div id="us-consent-ui">
-         <button on="tap:consent.prompt(consent=SourcePoint)">Do Not Sell My Info</button>
-      </div>
-      <div id="eea-consent-ui">
+      <div id="consent-ui">
          <button on="tap:consent.prompt(consent=SourcePoint)">Privacy Settings</button>
       </div>
    </body>
