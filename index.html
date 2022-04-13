@@ -1,8 +1,8 @@
 <!doctype html>
-<html amp lang="en">
+   <html amp lang="en">
    <head>
       <meta charset="utf-8">
-      <title>Hello AMPs</title>
+      <title>Simple AMP implementation</title>
       <script async src="https://cdn.ampproject.org/v0.js"></script>
       <!-- required for the amp-consent component -->
       <script async custom-element="amp-consent" src="https://cdn.ampproject.org/v0/amp-consent-0.1.js"></script>
@@ -10,21 +10,36 @@
       <script async custom-element="amp-analytics" src="https://cdn.ampproject.org/v0/amp-analytics-0.1.js"></script>
    </head>
    <body>
-      <amp-analytics data-block-on-consent="_till_accepted" type="googleanalytics">
+      <h1>Simple AMP code example - Sourcepoint</h1>
+      <amp-analytics>
          <script type=application/json>
             {
-               "linkers":{"authId":{"ids":{"_a":"CLIENT_ID(AMP-CONSENT)"},"enabled":true,"proxyOnly":false}},"cookies":{"enabled":true,"authId":{"value":"LINKER_PARAM(authId, _a)"}}
+               "linkers": {
+                  "authId": {
+                     "ids": {
+                        "_a": "CLIENT_ID(AMP-CONSENT)"
+                     },
+                     "enabled": true,
+                     "proxyOnly":false
+                  }
+               },
+               "cookies": {
+                  "enabled": true,
+                  "authId": {
+                     "value": "LINKER_PARAM(authId, _a)"
+                  }
+               }
             }
          </script>
       </amp-analytics>
-      <amp-consent id="consent" layout="nodisplay" type="SourcePoint">
+      <amp-consent id="consent" layout="nodisplay">
          <script type="application/json">
             {
                "checkConsentHref": "https://cdn.privacy-mgmt.com/wrapper/tcfv2/v1/amp-v2?authId=CLIENT_ID",
                "consentRequired": "remote",
                "consentInstanceId": "sourcepoint",
                "postPromptUI": "consent-ui",
-               "promptUISrc": "https://cdn.privacy-mgmt.com/amp/unified/index.html?authId=CLIENT_ID&source_url=SOURCE_URL",                
+               "promptUISrc": "//cdn.privacy-mgmt.com/amp/unified/index.html?authId=CLIENT_ID&source_url=SOURCE_URL",
                "cookies": {
                   "enabled": true,
                   "AMP-CONSENT": {    "value": "LINKER_PARAM(authId, _a)" }
@@ -34,14 +49,13 @@
                   "propertyHref": "https://amp.newscriptdemo.com",
                   "stageCampaign": false,
                   "pmTab": "purposes",
-                  "privacyManagerId": 547514,
-                  "isTCFV2": true
+                  "privacyManagerId": 547514 
                }
             }
          </script>
       </amp-consent>
       <div id="consent-ui">
-         <button on="tap:consent.prompt(consent=SourcePoint)">Privacy Settings Data Block</button>
+         <button on="tap:consent.prompt(consent=SourcePoint)">Privacy Settings GDPR</button>
       </div>
    </body>
 </html>
