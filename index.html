@@ -10,14 +10,6 @@
       <script async custom-element="amp-geo" src="https://cdn.ampproject.org/v0/amp-geo-0.1.js"></script>
       <!-- required to sync auth_id with publishers domain and Google.com domain --> 
       <script async custom-element="amp-analytics" src="https://cdn.ampproject.org/v0/amp-analytics-0.1.js"></script>
-      <style amp-custom>
-         .show {
-           display: block;
-         }
-         .hide {
-           display: none;
-         }
-       </style>
    </head>
    <body>
       <h1>Welcome to the mobile web CCPA & GDPR</h1>  
@@ -67,17 +59,16 @@
                   "eea": {
                      "consentRequired": "remote",
                      "checkConsentHref": "https://cdn.privacy-mgmt.com/wrapper/tcfv2/v1/amp-v2?authId=CLIENT_ID",                                          
-                     "postPromptUI": "consent-ui",
+                     "postPromptUI": "consent-eea",
                      "clientConfig": {                        
-                        "privacyManagerId": 547514,
-                        "isCCPA": false,                     
+                        "privacyManagerId": 547514,                       
                         "pmTab": "purposes"                        
                      }
                   },
                   "us": {
                      "consentRequired": "remote",
                      "checkConsentHref": "https://cdn.privacy-mgmt.com/wrapper/ccpa/amp-v2?authId=CLIENT_ID",
-                     "postPromptUI": "consent-ui",
+                     "postPromptUI": "consent-us",
                      "clientConfig": {
                         "isCCPA": true,
                         "privacyManagerId": 548950
@@ -87,11 +78,11 @@
             }
          </script>
       </amp-consent>
-      <div id="consent-ui">
-         <button on="tap:consent.prompt(consent=SourcePoint)">
-            <span [class]="isCCPA ? 'hide' : 'show'" class="hide">Privacy Manager CCPA</span>
-            <span [class]="isCCPA ? 'show' : 'hide'" class="show">Privacy Manager GDPR</span>
-         </button>
+      <div id="consent-eea">
+         <button on="tap:consent.prompt(consent=SourcePoint)">Privacy Settings</button>
+      </div>
+      <div id="consent-us">
+         <button on="tap:consent.prompt(consent=SourcePoint)">Do not sell my personal information</button>
       </div>
    </body>
 </html>
