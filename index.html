@@ -59,7 +59,7 @@
                   "eea": {
                      "consentRequired": "remote",
                      "checkConsentHref": "https://cdn.privacy-mgmt.com/wrapper/tcfv2/v1/amp-v2?authId=CLIENT_ID",                                          
-                     "postPromptUI": "consent-eea",
+                     "postPromptUI": "eea-consent-ui",
                      "clientConfig": {                        
                         "privacyManagerId": 547514,                       
                         "pmTab": "purposes"                        
@@ -68,7 +68,7 @@
                   "us": {
                      "consentRequired": "remote",
                      "checkConsentHref": "https://cdn.privacy-mgmt.com/wrapper/ccpa/amp-v2?authId=CLIENT_ID",
-                     "postPromptUI": "consent-us",
+                     "postPromptUI": "us-consent-ui",
                      "clientConfig": {
                         "isCCPA": true,
                         "privacyManagerId": 548950
@@ -78,10 +78,10 @@
             }
          </script>
       </amp-consent>
-      <div id="consent-eea">
+      <div id="eea-consent-ui">
          <button on="tap:consent.prompt(consent=SourcePoint)">Privacy Settings</button>
       </div>
-      <div id="consent-us">
+      <div id="us-consent-ui">
          <button on="tap:consent.prompt(consent=SourcePoint)">Do not sell my personal information</button>
       </div>
    </body>
