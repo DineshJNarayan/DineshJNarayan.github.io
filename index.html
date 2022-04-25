@@ -10,8 +10,20 @@
                accountId: 1732,
                baseEndpoint: 'https://cdn.privacy-mgmt.com',
                //propertyHref: 'https://www.visitdenmark.com',
-               ccpa: { },
-               gdpr: { includeTcfApi: true },
+               postPromptUI: "consent-ui",
+               ccpa: {
+                  clientConfig: {
+                     isCCPA: true,
+                     privacyManagerId: 638450
+                  }
+               },
+               gdpr: { 
+                  includeTcfApi: true, 
+                  clientConfig: {                        
+                        privacyManagerId: 600545,                       
+                        pmTab: "purposes"                        
+                  }
+               },
                joinHref: true,
                targetingParams:{            
                   subscribed: false          
@@ -50,5 +62,9 @@
       </script>
       <script src='https://cdn.privacy-mgmt.com/unified/wrapperMessagingWithoutDetection.js' async></script>
    </head>
-   <body></body>
+   <body>
+      <div id="consent-ui">
+         <button on="tap:consent.prompt(consent=SourcePoint)">Privacy Settings</button>
+      </div>
+   </body>
 </html>    
