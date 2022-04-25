@@ -11,18 +11,9 @@
                baseEndpoint: 'https://cdn.privacy-mgmt.com',
                //propertyHref: 'https://www.visitdenmark.com',
                postPromptUI: "consent-ui",
-               ccpa: {
-                  clientConfig: {
-                     isCCPA: true,
-                     privacyManagerId: 638450
-                  }
-               },
+               ccpa: {},
                gdpr: { 
-                  includeTcfApi: true, 
-                  clientConfig: {                        
-                        privacyManagerId: 600545,                       
-                        pmTab: "purposes"                        
-                  }
+                  includeTcfApi: true 
                },
                joinHref: true,
                targetingParams:{            
@@ -63,8 +54,11 @@
       <script src='https://cdn.privacy-mgmt.com/unified/wrapperMessagingWithoutDetection.js' async></script>
    </head>
    <body>
-      <div id="consent-ui">
-         <button on="tap:consent.prompt(consent=SourcePoint)">Privacy Settings</button>
+      <div id="us-consent-ui">
+         <p>Edit <a onclick="window._sp_.gdpr.loadPrivacyManagerModal('638450', 'purposes')" href="javascript:void(0);" class="w3-hover-text-green">Do not sell my information</a></p>
+      </div>
+      <div id="eu-consent-ui">
+         <p>Edit <a onclick="window._sp_.gdpr.loadPrivacyManagerModal('600545', 'purposes')" href="javascript:void(0);" class="w3-hover-text-green">Privacy Settings</a></p>
       </div>
    </body>
 </html>    
