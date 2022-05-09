@@ -52,6 +52,32 @@
          }
       </script>
       <script src='https://cdn.privacy-mgmt.com/unified/wrapperMessagingWithoutDetection.js' async></script>
+
+      <script type="text/javascript">
+         function showPrivacyManager(sp_gdpr) {
+            if(sp_gdpr){
+               //document.getElementById("eu-consent-ui").style.display="inline-block";
+               document.getElementById("eu-consent-ui").style.visibility="visible";
+               document.getElementById("us-consent-ui").style.visibility="hidden";
+            }
+         }
+
+         window.__tcfapi('addEventListener', 2, function (tcData, success) {
+            console.log("tcData.gdprApplies: " + tcData.gdprApplies);
+            if (success) {
+               if (tcData.eventStatus === 'tcloaded'||tcData.eventStatus === 'cmpuishown') {
+                  showPrivacyManager(tcData.gdprApplies)
+                  window.__tcfapi('removeEventListener', 2, function (success) {
+                     if(success) {
+                        console.log('removed: '+tcData.listenerId); // triggers 1x
+                     }
+                  }, tcData.listenerId);
+               }
+            }
+         });
+
+      </script>
+
    </head>
    <body>
       <div id="us-consent-ui">
