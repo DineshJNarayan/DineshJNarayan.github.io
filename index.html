@@ -9,16 +9,12 @@
             config: {
                accountId: 1732,
                baseEndpoint: 'https://cdn.privacy-mgmt.com',
-               //propertyHref: 'https://www.visitdenmark.com',
                postPromptUI: "consent-ui",
                ccpa: {},
                gdpr: { 
                   includeTcfApi: true 
                },
                joinHref: true,
-               targetingParams:{            
-                  subscribed: false          
-               },
                events: {
                   onMessageChoiceSelect: function() {
                      console.log('[event] onMessageChoiceSelect', arguments);
