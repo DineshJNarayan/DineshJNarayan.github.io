@@ -54,11 +54,19 @@
       <script src='https://cdn.privacy-mgmt.com/unified/wrapperMessagingWithoutDetection.js' async></script>
 
       <script type="text/javascript">
+
          function showPrivacyManager(sp_gdpr) {
             if(sp_gdpr){
-               //document.getElementById("eu-consent-ui").style.display="inline-block";
                document.getElementById("eu-consent-ui").style.visibility="visible";
                document.getElementById("us-consent-ui").style.visibility="hidden";
+            } else {
+               __uspapi('getUSPData',1,function(uspData,success)  {
+                  if(JSON.stringify(uspData).indexOf("---")===-1){
+                     document.getElementById("eu-consent-ui").style.visibility="hidden";
+                     document.getElementById("us-consent-ui").style.visibility="visible";
+                  }
+               })
+               
             }
          }
 
