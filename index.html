@@ -9,7 +9,6 @@
             config: {
                accountId: 1732,
                baseEndpoint: 'https://cdn.privacy-mgmt.com',
-               postPromptUI: "consent-ui",
                ccpa: {},
                gdpr: { 
                   includeTcfApi: true 
@@ -84,7 +83,7 @@
    </head>
    <body>
       <div id="us-consent-ui">
-         <p>Edit <a onclick="window._sp_.gdpr.loadPrivacyManagerModal('638450', 'purposes')" href="javascript:void(0);" class="w3-hover-text-green">Do not sell my information</a></p>
+         <p>Edit <a onclick="window._sp_.ccpa.loadPrivacyManagerModal('638450', 'purposes')" href="javascript:void(0);" class="w3-hover-text-green">Do not sell my information</a></p>
       </div>
       <div id="eu-consent-ui">
          <p>Edit <a onclick="window._sp_.gdpr.loadPrivacyManagerModal('600545', 'purposes')" href="javascript:void(0);" class="w3-hover-text-green">Privacy Settings</a></p>
