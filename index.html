@@ -36,7 +36,7 @@
                   onSPPMObjectReady: function() {
                      console.log('[event] onSPPMObjectReady', arguments);
                   },
-                  onConsentReady: function (consentUUID, euconsent) {
+                  onConsentReady: function () {
                      console.log('[event] onConsentReady', arguments);
                   },
                   onError: function() {
@@ -84,7 +84,7 @@
    </head>
    <body>
       <div id="us-consent-ui">
-         <p>US - <a onclick="window._sp_.ccpa.loadPrivacyManagerModal('638450', 'purposes')" href="javascript:void(0);" class="w3-hover-text-green">Do not sell my information</a></p>
+         <p>US - <a onclick="window._sp_.ccpa.loadPrivacyManagerModal(null, '638450')" href="javascript:void(0);" class="w3-hover-text-green">Do not sell my information</a></p>
       </div>
       <div id="eu-consent-ui">
          <p>EU - <a onclick="window._sp_.gdpr.loadPrivacyManagerModal('600545', 'purposes')" href="javascript:void(0);" class="w3-hover-text-green">Edit privacy settings</a></p>
