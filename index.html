@@ -67,7 +67,7 @@
          window.__tcfapi('addEventListener', 2, function (tcData, success) {
             console.log("tcData.gdprApplies: " + tcData.gdprApplies);
             document.getElementById("eu-consent-ui").style.visibility="hidden";
-               document.getElementById("us-consent-ui").style.visibility="hidden";
+            document.getElementById("us-consent-ui").style.visibility="hidden";
             if (success) {
                if (tcData.eventStatus === 'tcloaded'||tcData.eventStatus === 'cmpuishown') {
                   showPrivacyManager(tcData.gdprApplies)
