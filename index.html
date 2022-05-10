@@ -51,6 +51,7 @@
       <script type="text/javascript">
 
          function showPrivacyManager(sp_gdpr) {
+            console.log("tcData.gdprApplies: " + sp_gdpr);
             if(sp_gdpr){
                document.getElementById("eu-consent-ui").style.visibility="visible";
                document.getElementById("us-consent-ui").style.visibility="hidden";
@@ -65,15 +66,13 @@
          }
 
          window.__tcfapi('addEventListener', 2, function (tcData, success) {
-            console.log("tcData.gdprApplies: " + tcData.gdprApplies);
-            document.getElementById("eu-consent-ui").style.visibility="hidden";
-            document.getElementById("us-consent-ui").style.visibility="hidden";
+            console.log('add event listener: '+tcData.listenerId);
             if (success) {
                if (tcData.eventStatus === 'tcloaded'||tcData.eventStatus === 'cmpuishown') {
                   showPrivacyManager(tcData.gdprApplies)
                   window.__tcfapi('removeEventListener', 2, function (success) {
                      if(success) {
-                        console.log('removed: '+tcData.listenerId);
+                        console.log('removed event listener: '+tcData.listenerId);
                      }
                   }, tcData.listenerId);
                }
