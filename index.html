@@ -66,6 +66,8 @@
 
          window.__tcfapi('addEventListener', 2, function (tcData, success) {
             console.log("tcData.gdprApplies: " + tcData.gdprApplies);
+            document.getElementById("eu-consent-ui").style.visibility="hidden";
+               document.getElementById("us-consent-ui").style.visibility="hidden";
             if (success) {
                if (tcData.eventStatus === 'tcloaded'||tcData.eventStatus === 'cmpuishown') {
                   showPrivacyManager(tcData.gdprApplies)
@@ -83,10 +85,10 @@
    </head>
    <body>
       <div id="us-consent-ui">
-         <p>Edit <a onclick="window._sp_.ccpa.loadPrivacyManagerModal('638450', 'purposes')" href="javascript:void(0);" class="w3-hover-text-green">Do not sell my information</a></p>
+         <p>US - <a onclick="window._sp_.ccpa.loadPrivacyManagerModal('638450', 'purposes')" href="javascript:void(0);" class="w3-hover-text-green">Do not sell my information</a></p>
       </div>
       <div id="eu-consent-ui">
-         <p>Edit <a onclick="window._sp_.gdpr.loadPrivacyManagerModal('600545', 'purposes')" href="javascript:void(0);" class="w3-hover-text-green">Privacy Settings</a></p>
+         <p>EU - <a onclick="window._sp_.gdpr.loadPrivacyManagerModal('600545', 'purposes')" href="javascript:void(0);" class="w3-hover-text-green">Edit privacy settings</a></p>
       </div>
    </body>
 </html>    
